@@ -1,0 +1,92 @@
+/* styles-usage.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #DDD9FA; /* Pastel purple background */
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+.container {
+  flex: 1;
+  max-width: 420px;
+  margin: 20px auto 70px auto; /* Reserve space for the tab bar */
+  background-color: #fff;
+  width: 90%;
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #5e4b8b;
+  margin-bottom: 20px;
+}
+
+/* Metrics container that holds the statistic cards */
+.metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Styling for individual metric cards */
+.metric-card {
+  border: 2px solid #5e4b8b;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.metric-card h2 {
+  color: #5e4b8b;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.metric-card p {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Bottom Tab Bar Styling */
+.tab-bar {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  background-color: #fff;
+  border-top: 2px solid #ccc;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  color: #5e4b8b;
+}
+
+.tab:hover {
+  background-color: #eee;
+}
+
+.tab.active {
+  background-color: #ddd;
+  border-radius: 10px;
+}

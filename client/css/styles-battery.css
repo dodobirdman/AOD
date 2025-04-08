@@ -17,85 +17,179 @@ body {
   position: relative;
 }
 
-/* Container for main content */
 .container {
   flex: 1;
   max-width: 420px;
-  margin: 0 auto;
+  margin: 20px auto 70px auto;
   background-color: #fff;
-  width: 100%;
+  width: 90%;
   padding: 20px;
   border-radius: 20px;
   text-align: center;
-  margin-top: 20px;
-  margin-bottom: 70px; /* space for bottom tab bar */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Title style */
 h1 {
   color: #5e4b8b;
   margin-bottom: 20px;
 }
 
-/* Battery Outline */
+/* Battery Icon Section */
+.battery-icon-section {
+  margin-bottom: 20px;
+}
+
 .battery-outline {
-  width: 80%;
-  height: 120px;
+  width: 100%;
+  height: 150px;
   border: 4px solid #5e4b8b;
   border-radius: 16px;
-  margin: 0 auto 10px auto;
+  margin: 0 auto;
   position: relative;
   background-color: #fff;
 }
 
-/* Battery Level (green fill) */
-.battery-level {
-  width: 50%;
+/* Current battery level (normal green) */
+.currentBattery {
   height: 100%;
-  background-color: #4CAF50; /* green */
-  border-radius: 12px 0 0 12px;
+  background-color: #4CAF50;
   text-align: center;
-  line-height: 120px;
+  line-height: 150px;
   color: #fff;
   font-size: 20px;
+  border-radius: 12px 0 0 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
-/* Charge slider */
-#chargeSlider {
-  width: 80%;
-  margin-bottom: 10px;
+/* Target battery overlay (lighter green) */
+.targetBattery {
+  height: 100%;
+  background-color: #81C784;
+  text-align: center;
+  line-height: 150px;
+  color: #fff;
+  font-size: 20px;
+  border-radius: 0 12px 12px 0; /* round right side only */
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  opacity: 0.8;
 }
 
-/* Estimated price text */
-#estimatedPrice {
-  color: #333;
-  margin: 10px 0;
-}
-
-.actions-section {
+/* Separator */
+.separator {
   margin: 20px 0;
+  border: 0;
+  border-top: 2px solid #ccc;
 }
 
-.actions-section button {
-  padding: 12px 20px;
+/* Lower Controls Section */
+.controls-section {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.controls-section label {
+  color: #5e4b8b;
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.controls-section input[type="range"],
+.controls-section input[type="time"] {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+}
+
+.controls-section span {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Stylized checkbox for enabling/disabling balancing */
+.balancing-option {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+}
+
+.balancing-option input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #5e4b8b;
+  border-radius: 4px;
+  margin-right: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.balancing-option input[type="checkbox"]:checked {
+  background-color: #5e4b8b;
+}
+
+.balancing-option input[type="checkbox"]:checked::after {
+  content: '✔';
+  position: absolute;
+  top: 0;
+  left: 4px;
+  color: #fff;
+  font-size: 16px;
+}
+
+/* Expected Charging Start Time box */
+.start-time-box {
+  padding: 15px;
+  background-color: #f0f0f0;
+  border: 2px solid #5e4b8b;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+  margin: 20px 0;
+  color: #333;
+}
+
+/* Buttons */
+.save-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: #fff;
   border: none;
   border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 15px;
+}
+
+.save-btn:hover {
+  background-color: #66BB6A;
+}
+
+.start-btn {
+  width: 100%;
+  padding: 12px;
   background-color: #5e4b8b;
   color: #fff;
-  cursor: pointer;
+  border: none;
+  border-radius: 12px;
   font-size: 16px;
+  cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
-.actions-section button:hover {
+.start-btn:hover {
   background-color: #7e6cae;
-}
-
-label {
-  display: block;
-  margin-bottom: 8px;
-  color: #5e4b8b;
 }
 
 /* Bottom Tab Bar */
