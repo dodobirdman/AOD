@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Balance Settings - Vehicle Charger Prototype</title>
+  <link rel="stylesheet" href="css/styles-balance.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Grid Balancing Settings</h1>
+    
+    <!-- Battery Percentage Selection -->
+    <div class="balance-slider-section">
+      <label for="balanceSlider">Battery % Offered for Grid Balance:</label>
+      <input type="range" id="balanceSlider" min="0" max="100" value="20" />
+      <span id="balanceValue">20%</span>
+    </div>
+
+    <!-- Grid Balancing Mode Selection -->
+    <div class="grid-mode-section">
+      <label>Grid Balancing Mode:</label>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="balanceMode" value="always" checked>
+          Always allow my car to balance
+        </label>
+        <label>
+          <input type="radio" name="balanceMode" value="timed">
+          Only allow during specific times
+        </label>
+      </div>
+    </div>
+
+    <!-- Timed Settings (shown when "timed" is selected) -->
+    <div class="timed-settings" id="timedSettings" style="display: none;">
+      <label for="balanceStartTime">Start Time:</label>
+      <input type="time" id="balanceStartTime" />
+      <label for="balanceEndTime">End Time:</label>
+      <input type="time" id="balanceEndTime" />
+    </div>
+
+    <button id="saveBalanceSettingsBtn">Save Settings</button>
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="tab-bar">
+    <a href="battery.html" class="tab">
+      <span>Battery</span>
+    </a>
+    <a href="balance.html" class="tab active">
+      <span>Balance</span>
+    </a>
+    <a href="usage.html" class="tab">
+      <span>Usage</span>
+    </a>
+    <a href="settings.html" class="tab">
+      <span>Settings</span>
+    </a>
+  </div>
+
+  <script src="js/balance.js"></script>
+</body>
+</html>

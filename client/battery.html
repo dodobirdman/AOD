@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, 
+                 maximum-scale=1.0, user-scalable=no" />
+  <title>Battery - Vehicle Charger Prototype</title>
+  <link rel="stylesheet" href="css/styles-battery.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Battery</h1>
+
+    <!-- Battery info -->
+    <div class="battery-section">
+      <div class="battery-outline">
+        <div class="battery-level" id="batteryLevel">50%</div>
+      </div>
+      <input 
+        type="range" 
+        id="chargeSlider" 
+        min="0" 
+        max="100" 
+        value="50" 
+      />
+      <p id="estimatedPrice">Est. Price: 0.00 DKK</p>
+    </div>
+
+    <!-- Departure time and actions -->
+    <div class="actions-section">
+      <label for="departureTime">Departure Time:</label>
+      <input type="time" id="departureTime" />
+      <button id="saveTimeBtn">Save Time</button>
+    </div>
+
+    <div class="actions-section">
+      <button id="startNowBtn">Start Charging</button>
+    </div>
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="tab-bar">
+    <a href="battery.html" class="tab active">
+      <span>Battery</span>
+    </a>
+    <a href="balance.html" class="tab">
+      <span>Balance</span>
+    </a>
+    <a href="usage.html" class="tab">
+      <span>Usage</span>
+    </a>
+    <a href="settings.html" class="tab">
+      <span>Settings</span>
+    </a>
+  </div>
+
+  <script src="js/battery.js"></script>
+</body>
+</html>

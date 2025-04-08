@@ -1,0 +1,61 @@
+/* styles-settings.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+body {
+  background-color: #DDD9FA;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+.container {
+  flex: 1;
+  max-width: 420px;
+  margin: 0 auto;
+  background-color: #fff;
+  width: 100%;
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 70px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #5e4b8b;
+  margin-bottom: 20px;
+}
+
+.tab-bar {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  background-color: #fff;
+  border-top: 2px solid #ccc;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  color: #5e4b8b;
+}
+
+.tab:hover {
+  background-color: #eee;
+}
+
+.tab.active {
+  background-color: #ddd;
+  border-radius: 10px;
+}
