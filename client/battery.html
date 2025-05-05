@@ -8,67 +8,66 @@
   <link rel="stylesheet" href="css/styles-battery.css" />
 </head>
 <body>
+  <!-- Settings icon -->
+  <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
+
   <div class="container">
-    <h1>Battery</h1>
+    <h1>Battery & V2G Settings</h1>
     
     <!-- Battery Icon Section -->
     <div class="battery-icon-section">
       <div class="battery-outline">
-        <!-- Current battery level fixed at 43% -->
-        <div class="currentBattery" id="currentBattery" style="width: 43%;">43%</div>
-        <!-- Target battery overlay controlled by the slider.
-             Its left and width will be set by JS. -->
+        <div class="currentBattery" id="currentBattery">43%</div>
         <div class="targetBattery" id="targetBattery"></div>
       </div>
     </div>
-    
-    <!-- Separator -->
     <hr class="separator" />
     
-    <!-- Lower Controls Section -->
+    <!-- Controls Section -->
     <div class="controls-section">
-      <!-- Target Level Slider -->
-      <label for="targetSlider">Set Desired Charge Level (%):</label>
-      <input type="range" id="targetSlider" min="0" max="100" value="80" />
-      <span id="targetValue">80%</span>
-      
-      <!-- Departure Time Input -->
+      <!-- Desired Charge Level -->
+      <label for="targetSlider">Desired Morning Charge (%):</label>
+      <input type="range" id="targetSlider" min="43" max="100" value="80" />
+
+      <!-- Departure Time -->
       <label for="departureTime">Departure Time:</label>
-      <input type="time" id="departureTime" value="07:00" />
-      
-      <!-- Enable Balancing Checkbox -->
+      <input type="time" id="departureTime" value="07:00" class="compact-time" />
+
+      <!-- V2G Balancing Enable -->
       <div class="balancing-option">
+        <label for="enableBalancing">Enable V2G Balancing</label>
         <input type="checkbox" id="enableBalancing" />
-        <label for="enableBalancing">Enable Grid Balancing</label>
       </div>
-      
-      <!-- Expected Charging Start Time Display -->
-      <div class="start-time-box">
-        Expected Charging Start Time: <span id="expectedStartTime">--:--</span>
+
+      <!-- V2G Settings: only shown when enabled -->
+      <div id="v2gSettings" class="v2g-settings" style="display: none;">
+        <label for="balanceStartTime">Balancing Start Time:</label>
+        <input type="time" id="balanceStartTime" class="compact-time" />
+        <label for="balanceEndTime">Balancing End Time:</label>
+        <input type="time" id="balanceEndTime" class="compact-time" />
+        <label for="balanceMargin">Max % to Feed Back:</label>
+        <div class="margin-slider">
+          <input type="range" id="balanceMargin" min="0" max="100" value="20" />
+          <output id="balanceMarginValue">20%</output>
+        </div>
       </div>
-      
-      <!-- Save Changes Button -->
+
+      <!-- Expected Start Time & Estimated Cost -->
+      <div class="start-cost-box small">
+        <div>Charging starts at <strong><span id="expectedStartTime">--:--</span></strong></div>
+        <div>Est. Cost: <strong><span id="estimatedCost">--.--</span> DKK</strong></div>
+      </div>
+
+      <!-- Save & Override Buttons -->
       <button id="saveChangesBtn" class="save-btn">Save Changes</button>
-      
-      <!-- Start Charging Now Button -->
       <button id="startNowBtn" class="start-btn">Start Charging Now</button>
     </div>
   </div>
 
-  <!-- Bottom Tab Bar -->
+  <!-- Bottom Nav -->
   <div class="tab-bar">
-    <a href="battery.html" class="tab active">
-      <span>Battery</span>
-    </a>
-    <a href="balance.html" class="tab">
-      <span>Balance</span>
-    </a>
-    <a href="usage.html" class="tab">
-      <span>Usage</span>
-    </a>
-    <a href="settings.html" class="tab">
-      <span>Settings</span>
-    </a>
+    <a href="battery.html" class="tab active"><span>Battery</span></a>
+    <a href="usage.html" class="tab"><span>Usage</span></a>
   </div>
 
   <script src="js/battery.js"></script>

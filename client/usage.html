@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" 
+  <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Usage - Vehicle Charger Prototype</title>
-  <link rel="stylesheet" href="css/styles-usage.css">
+  <link rel="stylesheet" href="css/styles-usage.css" />
 </head>
 <body>
+  <!-- Settings icon -->
+  <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
+
   <div class="container">
     <h1>Usage</h1>
     <div class="metrics">
@@ -24,22 +27,18 @@
         <p id="totalCost">0.00 DKK</p>
       </div>
     </div>
+
+    <!-- Recent Sessions -->
+    <h2>Recent Charging Sessions</h2>
+    <div class="session-list" id="sessionList">
+      <!-- Populated by JS -->
+    </div>
   </div>
 
-  <!-- Bottom Tab Bar -->
+  <!-- Bottom Nav -->
   <div class="tab-bar">
-    <a href="battery.html" class="tab">
-      <span>Battery</span>
-    </a>
-    <a href="balance.html" class="tab">
-      <span>Balance</span>
-    </a>
-    <a href="usage.html" class="tab active">
-      <span>Usage</span>
-    </a>
-    <a href="settings.html" class="tab">
-      <span>Settings</span>
-    </a>
+    <a href="battery.html" class="tab"><span>Battery</span></a>
+    <a href="usage.html" class="tab active"><span>Usage</span></a>
   </div>
 
   <script src="js/usage.js"></script>
