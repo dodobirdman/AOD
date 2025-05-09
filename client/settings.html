@@ -4,16 +4,81 @@
   <meta charset="UTF-8" />
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Settings - Vehicle Charger Prototype</title>
+  <title>Settings – Vehicle Charger Prototype</title>
   <link rel="stylesheet" href="css/styles-settings.css" />
 </head>
 <body>
   <!-- Settings icon (self-link) -->
   <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
 
+  <!-- Back button -->
+  <a class="back-button" href="battery.html">← Back</a>
+  
   <div class="container">
     <h1>Settings</h1>
-    <p>Placeholder for general app settings.</p>
+
+    <!-- Account -->
+    <form id="changePasswordForm">
+      <div class="setting-item">
+        <label for="newPassword">New Password</label>
+        <input type="password" id="newPassword" placeholder="Enter new password" />
+      </div>
+      <div class="setting-item">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="Confirm new password" />
+      </div>
+      <button type="submit" class="btn">Change Password</button>
+    </form>
+
+    <!-- Units & Currency -->
+    <div class="setting-item">
+      <label for="unitSelect">Energy Unit</label>
+      <select id="unitSelect">
+        <option value="kWh">kWh</option>
+        <option value="Wh">Wh</option>
+      </select>
+    </div>
+    <div class="setting-item">
+      <label for="currencySelect">Currency</label>
+      <select id="currencySelect">
+        <option value="DKK">DKK</option>
+        <option value="EUR">EUR</option>
+      </select>
+    </div>
+
+    <!-- Theme -->
+    <div class="setting-item">
+      <label for="themeSelect">Theme</label>
+      <select id="themeSelect">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
+
+    <!-- Notifications -->
+    <div class="setting-item toggle-item">
+      <label>Notify on target reached</label>
+      <input type="checkbox" id="notifyTarget" />
+    </div>
+    <div class="setting-item toggle-item">
+      <label>Notify on V2G events</label>
+      <input type="checkbox" id="notifyV2G" />
+    </div>
+
+    <!-- Pricing & Rates -->
+    <div class="setting-item">
+      <label for="defaultCost">Default Cost per kWh</label>
+      <input type="number" id="defaultCost" min="0" step="0.01" placeholder="e.g. 2.90" />
+    </div>
+
+    <!-- Data & Privacy -->
+    <div class="setting-item button-group">
+      <button id="exportDataBtn" class="btn secondary">Export Data</button>
+      <button id="clearDataBtn"  class="btn danger">Clear All Data</button>
+    </div>
+
+    <!-- Save -->
+    <button id="saveSettingsBtn" class="save-btn">Save Settings</button>
   </div>
 
   <script src="js/settings.js"></script>

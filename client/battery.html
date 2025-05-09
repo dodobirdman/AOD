@@ -13,54 +13,84 @@
 
   <div class="container">
     <h1>Battery & V2G Settings</h1>
-    
+
     <!-- Battery Icon Section -->
     <div class="battery-icon-section">
       <div class="battery-outline">
         <div class="currentBattery" id="currentBattery">43%</div>
         <div class="targetBattery" id="targetBattery"></div>
+        <div class="v2gMinLine" id="v2gMinLine">
+          <span class="line-icon">−</span>
+        </div>
+        <div class="v2gMaxLine" id="v2gMaxLine">
+          <span class="line-icon">+</span>
+        </div>
       </div>
     </div>
     <hr class="separator" />
-    
+
     <!-- Controls Section -->
     <div class="controls-section">
       <!-- Desired Charge Level -->
       <label for="targetSlider">Desired Morning Charge (%):</label>
-      <input type="range" id="targetSlider" min="43" max="100" value="80" />
+      <input
+        type="range"
+        id="targetSlider"
+        min="0"
+        max="100"
+        value="80"
+      />
 
       <!-- Departure Time -->
       <label for="departureTime">Departure Time:</label>
-      <input type="time" id="departureTime" value="07:00" class="compact-time" />
+      <input
+        type="time"
+        id="departureTime"
+        value="07:00"
+        class="compact-time"
+      />
 
-      <!-- V2G Balancing Enable -->
-      <div class="balancing-option">
-        <label for="enableBalancing">Enable V2G Balancing</label>
-        <input type="checkbox" id="enableBalancing" />
-      </div>
+      <!-- V2G Balancing Toggle -->
+      <button id="toggleV2GBtn" class="toggle-btn">Enable V2G Balancing</button>
 
       <!-- V2G Settings: only shown when enabled -->
       <div id="v2gSettings" class="v2g-settings" style="display: none;">
         <label for="balanceStartTime">Balancing Start Time:</label>
         <input type="time" id="balanceStartTime" class="compact-time" />
+
         <label for="balanceEndTime">Balancing End Time:</label>
         <input type="time" id="balanceEndTime" class="compact-time" />
-        <label for="balanceMargin">Max % to Feed Back:</label>
+
+        <label for="balanceMin">Minimum Acceptable Charge (%):</label>
         <div class="margin-slider">
-          <input type="range" id="balanceMargin" min="0" max="100" value="20" />
-          <output id="balanceMarginValue">20%</output>
+          <input type="range" id="balanceMin" min="0" max="100" value="70" />
+          <output id="balanceMinVal">70%</output>
+        </div>
+
+        <label for="balanceMax">Maximum Acceptable Charge (%):</label>
+        <div class="margin-slider">
+          <input type="range" id="balanceMax" min="0" max="100" value="90" />
+          <output id="balanceMaxVal">90%</output>
         </div>
       </div>
 
-      <!-- Expected Start Time & Estimated Cost -->
+      <!-- Expected Start Time, Estimated Cost & Immediate Button -->
       <div class="start-cost-box small">
-        <div>Charging starts at <strong><span id="expectedStartTime">--:--</span></strong></div>
-        <div>Est. Cost: <strong><span id="estimatedCost">--.--</span> DKK</strong></div>
+        <div class="start-cost-info">
+          <div>
+            Charging starts at
+            <strong><span id="expectedStartTime">--:--</span></strong>
+          </div>
+          <div>
+            Est. Cost:
+            <strong><span id="estimatedCost">--.--</span> DKK</strong>
+          </div>
+        </div>
+        <button id="immediateBtn" class="immediate-btn">Charge Immediately</button>
       </div>
 
-      <!-- Save & Override Buttons -->
+      <!-- Save Changes Button -->
       <button id="saveChangesBtn" class="save-btn">Save Changes</button>
-      <button id="startNowBtn" class="start-btn">Start Charging Now</button>
     </div>
   </div>
 

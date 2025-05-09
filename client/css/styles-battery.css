@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   background-color: #DDD9FA;
   font-family: 'Roboto', sans-serif;
@@ -8,104 +13,237 @@ body {
   min-height: 100vh;
 }
 
-/* Settings icon */
 .settings-icon {
-  position: absolute; top: 16px; right: 16px;
-  width: 40px; height: 40px;
-  background: #fff; border-radius: 50%;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px; cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .container {
   margin: 60px auto 70px;
-  max-width: 420px; background: #fff;
-  padding: 20px; border-radius: 20px;
-  text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-h1 { color: #5e4b8b; margin-bottom: 20px; }
-
-/* Battery Icon */
-.battery-outline {
-  width: 100%; height: 150px;
-  border: 4px solid #5e4b8b; border-radius: 16px;
-  position: relative; background: #fff; margin-bottom: 20px;
-}
-.currentBattery, .targetBattery {
-  height: 100%; line-height: 150px; color: #fff;
-  font-size: 20px; position: absolute; top: 0; z-index: 1;
-}
-.currentBattery {
-  background: #4CAF50; text-align: center;
-  border-radius: 12px 0 0 12px;
-  width: 43%;
-}
-.targetBattery {
-  background: #81C784; opacity: .8;
-  border-radius: 0 12px 12px 0;
+  max-width: 420px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 20px;
   text-align: center;
-  z-index: 2;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Separator */
-.separator { border-top: 2px solid #ccc; margin: 0 0 20px; }
+h1 {
+  color: #5e4b8b;
+  margin-bottom: 20px;
+}
 
-/* Controls */
-.controls-section { text-align: left; }
+.battery-outline {
+  width: 100%;
+  height: 150px;
+  border: 4px solid #5e4b8b;
+  border-radius: 16px;
+  position: relative;
+  background: #fff;
+  margin-bottom: 20px;
+}
+
+.currentBattery,
+.targetBattery,
+.v2gMinLine,
+.v2gMaxLine {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  line-height: 150px;
+  color: #fff;
+  font-size: 20px;
+}
+
+.currentBattery {
+  left: 0;
+  width: 43%;
+  background: #4CAF50;
+  border-radius: 12px 0 0 12px;
+  z-index: 1;
+  text-align: center;
+}
+
+.targetBattery {
+  background: #81C784;
+  opacity: 0.8;
+  border-radius: 0 12px 12px 0;
+  z-index: 2;
+  text-align: center;
+}
+
+.v2gMinLine,
+.v2gMaxLine {
+  width: 4px;
+  background: #5e4b8b;
+  z-index: 3;
+}
+
+.v2gMinLine {
+  transform: translateX(-2px);
+}
+
+.v2gMaxLine {
+  transform: translateX(-2px);
+}
+
+.line-icon {
+  position: absolute;
+  top: 55%;         /* place below battery */
+  left: 50%;
+  transform: translateX(-50%);
+  color: #5e4b8b;
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.separator {
+  border-top: 2px solid #ccc;
+  margin: 0 0 20px;
+}
+
+.controls-section {
+  text-align: left;
+}
+
 .controls-section label {
-  display: block; color: #5e4b8b; font-weight: bold;
+  display: block;
+  color: #5e4b8b;
+  font-weight: bold;
   margin: 12px 0 6px;
 }
+
 .controls-section input[type="range"],
 .controls-section input[type="time"] {
-  width: 100%; margin-bottom: 10px;
+  width: 100%;
+  margin-bottom: 10px;
 }
-.compact-time { width: 40%; margin-bottom: 15px; }
 
-/* V2G Settings block */
-.v2g-settings { margin: 10px 0 20px; }
-.margin-slider {
-  display: flex; align-items: center;
+.compact-time {
+  width: 40%;
+  margin-bottom: 15px;
 }
-.margin-slider input { flex: 1; }
+
+.toggle-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 14px;
+  background: #5e4b8b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle-btn.active {
+  background: #e53935;
+}
+
+.v2g-settings {
+  margin: 10px 0 20px;
+}
+
+.margin-slider {
+  display: flex;
+  align-items: center;
+}
+
+.margin-slider input {
+  flex: 1;
+}
+
 .margin-slider output {
-  width: 50px; text-align: center;
-  font-weight: bold; color: #5e4b8b;
+  width: 50px;
+  text-align: center;
+  font-weight: bold;
+  color: #5e4b8b;
   margin-left: 10px;
 }
 
-/* Start time & cost box small */
 .start-cost-box.small {
-  font-size: 14px; padding: 8px;
-  background: #f0f0f0; border: 2px solid #5e4b8b;
-  border-radius: 10px; margin: 20px 0;
+  font-size: 14px;
+  padding: 8px;
+  background: #f0f0f0;
+  border: 2px solid #5e4b8b;
+  border-radius: 10px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.start-cost-info {
   text-align: left;
 }
-.start-cost-box.small div { margin: 4px 0; }
 
-/* Buttons */
-.save-btn, .start-btn {
-  width: 100%; padding: 12px; border: none;
-  border-radius: 12px; font-size: 16px; cursor: pointer;
-  transition: background-color .2s ease; margin-bottom: 10px;
+.immediate-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  background: #5e4b8b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
-.save-btn { background: #4CAF50; color: #fff; }
-.save-btn:hover { background: #66BB6A; }
-.start-btn { background: #5e4b8b; color: #fff; }
-.start-btn:hover { background: #7e6cae; }
 
-/* Bottom Nav */
+.immediate-btn.active {
+  background: #e53935;
+}
+
+.save-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  background: #4CAF50;
+  color: #fff;
+  margin-top: 10px;
+}
+
+.save-btn:hover {
+  background: #66BB6A;
+}
+
 .tab-bar {
-  position: fixed; bottom: 0; left: 50%;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
   transform: translateX(-50%);
-  width: 100%; max-width: 420px;
-  background: #fff; border-top: 2px solid #ccc;
-  display: flex; justify-content: space-around;
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-top: 2px solid #ccc;
+  display: flex;
+  justify-content: space-around;
 }
+
 .tab {
-  flex: 1; text-align: center; padding: 10px 0;
-  text-decoration: none; color: #5e4b8b;
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  text-decoration: none;
+  color: #5e4b8b;
 }
-.tab.active { background: #ddd; border-radius: 10px; }
+
+.tab.active {
+  background: #ddd;
+  border-radius: 10px;
+}
