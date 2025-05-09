@@ -247,3 +247,43 @@ h1 {
   background: #ddd;
   border-radius: 10px;
 }
+
+/* Dark theme overrides */
+body.dark {
+  background: #333;
+}
+body.dark .container {
+  background: #444;
+}
+body.dark h1,
+body.dark label,
+body.dark .line-icon,
+body.dark .start-cost-info div,
+body.dark .separator {
+  color: #ddd;
+}
+body.dark .battery-outline {
+  border-color: #ddd;
+}
+body.dark .currentBattery {
+  background: #66BB6A;
+}
+body.dark .targetBattery {
+  background: #81C784;
+  opacity: 0.8;
+}
+body.dark .toggle-btn,
+body.dark .immediate-btn,
+body.dark .save-btn {
+  background: #666;
+  color: #eee;
+}
+body.dark .toggle-btn.active,
+body.dark .immediate-btn.active {
+  background: #b71c1c;
+}
+body.dark .save-btn:hover,
+body.dark .toggle-btn:hover,
+body.dark .immediate-btn:hover {
+  background: #555;
+}

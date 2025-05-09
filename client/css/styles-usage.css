@@ -94,3 +94,32 @@ h1, h2 { color: #5e4b8b; margin-bottom: 16px; }
 }
 
 .tab.active { background: #ddd; border-radius: 10px; }
+
+/* … your existing styles … */
+
+/* Dark theme overrides */
+body.dark {
+  background: #333;
+}
+body.dark .container {
+  background: #444;
+}
+body.dark h1, body.dark h2 {
+  color: #ddd;
+}
+body.dark .metric-card {
+  border-color: #888;
+  background: #555;
+}
+body.dark .metric-card h2,
+body.dark .metric-card p {
+  color: #eee;
+}
+body.dark .session-card {
+  background: #555;
+  border-color: #666;
+}
+body.dark .session-card h3,
+body.dark .session-card p {
+  color: #ddd;
+}

@@ -8,16 +8,14 @@
   <link rel="stylesheet" href="css/styles-settings.css" />
 </head>
 <body>
-  <!-- Settings icon (self-link) -->
+  <!-- Back button -->
+  <button class="back-btn" onclick="window.location='battery.html'">← Back</button>
   <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
 
-  <!-- Back button -->
-  <a class="back-button" href="battery.html">← Back</a>
-  
   <div class="container">
     <h1>Settings</h1>
 
-    <!-- Account -->
+    <!-- Account (unchanged) -->
     <form id="changePasswordForm">
       <div class="setting-item">
         <label for="newPassword">New Password</label>
@@ -30,19 +28,31 @@
       <button type="submit" class="btn">Change Password</button>
     </form>
 
-    <!-- Units & Currency -->
+    <!-- Car config -->
     <div class="setting-item">
-      <label for="unitSelect">Energy Unit</label>
-      <select id="unitSelect">
-        <option value="kWh">kWh</option>
-        <option value="Wh">Wh</option>
-      </select>
+      <label for="batterySize">Battery Capacity (kWh)</label>
+      <input type="number" id="batterySize" min="0" step="0.1" placeholder="e.g. 60" />
     </div>
     <div class="setting-item">
-      <label for="currencySelect">Currency</label>
-      <select id="currencySelect">
-        <option value="DKK">DKK</option>
-        <option value="EUR">EUR</option>
+      <label for="currentSoc">Current State of Charge (%)</label>
+      <input type="number" id="currentSoc" min="0" max="100" step="1" placeholder="e.g. 43" />
+    </div>
+
+    <!-- Charge speed -->
+    <div class="setting-item">
+      <label for="chargeSpeed">Charging Speed</label>
+      <select id="chargeSpeed">
+        <option value="7.4">7.4 kW</option>
+        <option value="11">11 kW</option>
+      </select>
+    </div>
+
+    <!-- Region DK1 / DK2 -->
+    <div class="setting-item toggle-item">
+      <label for="regionToggle">Region</label>
+      <select id="regionToggle">
+        <option value="DK1">DK1 (Vest for Storebælt)</option>
+        <option value="DK2">DK2 (Øst for Storebælt)</option>
       </select>
     </div>
 
@@ -63,12 +73,6 @@
     <div class="setting-item toggle-item">
       <label>Notify on V2G events</label>
       <input type="checkbox" id="notifyV2G" />
-    </div>
-
-    <!-- Pricing & Rates -->
-    <div class="setting-item">
-      <label for="defaultCost">Default Cost per kWh</label>
-      <input type="number" id="defaultCost" min="0" step="0.01" placeholder="e.g. 2.90" />
     </div>
 
     <!-- Data & Privacy -->

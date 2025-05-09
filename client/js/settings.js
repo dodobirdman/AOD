@@ -1,74 +1,83 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const key = 'appSettings';
-    const themeSelect   = document.getElementById('themeSelect');
-    const unitSelect    = document.getElementById('unitSelect');
-    const currencySelect= document.getElementById('currencySelect');
-    const notifyTarget  = document.getElementById('notifyTarget');
-    const notifyV2G     = document.getElementById('notifyV2G');
-    const costInput     = document.getElementById('defaultCost');
-    const saveBtn       = document.getElementById('saveSettingsBtn');
-    const clearBtn      = document.getElementById('clearDataBtn');
-    const exportBtn     = document.getElementById('exportDataBtn');
-    const pwdForm       = document.getElementById('changePasswordForm');
-    const newPwdInput   = document.getElementById('newPassword');
-    const confirmInput  = document.getElementById('confirmPassword');
+    const KEY = 'appSettings';
+    const els = {
+      theme:    document.getElementById('themeSelect'),
+      notifyT:  document.getElementById('notifyTarget'),
+      notifyV:  document.getElementById('notifyV2G'),
+      battery:  document.getElementById('batterySize'),
+      soc:      document.getElementById('currentSoc'),
+      speed:    document.getElementById('chargeSpeed'),
+      region:   document.getElementById('regionToggle'),
+      save:     document.getElementById('saveSettingsBtn'),
+      clear:    document.getElementById('clearDataBtn'),
+      export:   document.getElementById('exportDataBtn'),
+      pwdForm:  document.getElementById('changePasswordForm'),
+      newPwd:   document.getElementById('newPassword'),
+      confirm:  document.getElementById('confirmPassword'),
+    };
   
-    // Load saved settings
-    const saved = JSON.parse(localStorage.getItem(key) || '{}');
-    if (saved.theme)    themeSelect.value    = saved.theme;
-    if (saved.unit)     unitSelect.value     = saved.unit;
-    if (saved.currency) currencySelect.value = saved.currency;
-    if (typeof saved.notifyTarget === 'boolean') notifyTarget.checked = saved.notifyTarget;
-    if (typeof saved.notifyV2G    === 'boolean') notifyV2G.checked    = saved.notifyV2G;
-    if (saved.defaultCost) costInput.value = saved.defaultCost;
+    // Load
+    const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+    if (saved.theme)   els.theme.value   = saved.theme;
+    if (saved.notifyT) els.notifyT.checked = saved.notifyT;
+    if (saved.notifyV) els.notifyV.checked = saved.notifyV;
+    if (saved.battery) els.battery.value = saved.battery;
+    if (saved.soc)     els.soc.value     = saved.soc;
+    if (saved.speed)   els.speed.value   = saved.speed;
+    if (saved.region)  els.region.value  = saved.region;
+    applyTheme(saved.theme);
   
-    // Save settings
-    saveBtn.addEventListener('click', () => {
+    // Save
+    els.save.addEventListener('click', () => {
       const out = {
-        theme: themeSelect.value,
-        unit:  unitSelect.value,
-        currency: currencySelect.value,
-        notifyTarget: notifyTarget.checked,
-        notifyV2G:    notifyV2G.checked,
-        defaultCost:  costInput.value
+        theme:    els.theme.value,
+        notifyT:  els.notifyT.checked,
+        notifyV:  els.notifyV.checked,
+        battery:  els.battery.value,
+        soc:      els.soc.value,
+        speed:    els.speed.value,
+        region:   els.region.value,
       };
-      localStorage.setItem(key, JSON.stringify(out));
+      localStorage.setItem(KEY, JSON.stringify(out));
+      applyTheme(out.theme);
       alert('Settings saved!');
     });
   
-    // Clear all localStorage
-    clearBtn.addEventListener('click', () => {
-      if (confirm('Clear ALL local data? This cannot be undone.')) {
+    // Clear all
+    els.clear.addEventListener('click', () => {
+      if (confirm('Clear ALL local data?')) {
         localStorage.clear();
-        alert('Local data cleared.');
-        window.location.reload();
+        location.reload();
       }
     });
   
-    // Export localStorage to JSON file
-    exportBtn.addEventListener('click', () => {
+    // Export
+    els.export.addEventListener('click', () => {
       const data = {};
-      for (let i = 0; i < localStorage.length; i++) {
+      for (let i=0; i<localStorage.length; i++) {
         const k = localStorage.key(i);
-        try { data[k] = JSON.parse(localStorage.getItem(k)); }
-        catch { data[k] = localStorage.getItem(k); }
+        data[k] = JSON.parse(localStorage.getItem(k));
       }
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'charger-app-data.json';
-      a.click();
+      const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = 'app-data.json'; a.click();
       URL.revokeObjectURL(url);
     });
   
-    // Change password (PoC only)
-    pwdForm.addEventListener('submit', e => {
+    // PoC Change Password
+    els.pwdForm.addEventListener('submit', e => {
       e.preventDefault();
-      const n = newPwdInput.value, c = confirmInput.value;
-      if (!n || !c) return alert('Fill in both fields.');
-      if (n !== c)   return alert('Passwords do not match.');
-      alert('Password changed (PoC only).');
-      pwdForm.reset();
+      if (!els.newPwd.value || !els.confirm.value)
+        return alert('Fill both fields.');
+      if (els.newPwd.value !== els.confirm.value)
+        return alert('Passwords do not match.');
+      alert('Password changed (PoC)');
+      els.pwdForm.reset();
     });
+  
+    function applyTheme(t) {
+      document.body.classList.toggle('dark', t==='dark');
+    }
   });
   
