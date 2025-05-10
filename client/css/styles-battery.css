@@ -87,9 +87,6 @@ h1 {
   width: 4px;
   background: #5e4b8b;
   z-index: 3;
-}
-.v2gMinLine,
-.v2gMaxLine {
   transform: translateX(-2px);
 }
 .line-icon {
@@ -151,13 +148,18 @@ h1 {
   margin-bottom: 20px;
 }
 .sched-btn {
-  flex: 1; padding: 10px 0;
-  border: 2px solid #5e4b8b; border-radius: 8px;
-  background: #fff; color: #5e4b8b;
-  font-size: 14px; cursor: pointer;
+  flex: 1;
+  padding: 10px 0;
+  border: 2px solid #5e4b8b;
+  border-radius: 8px;
+  background: #fff;
+  color: #5e4b8b;
+  font-size: 14px;
+  cursor: pointer;
 }
 .sched-btn.active {
-  background: #5e4b8b; color: #fff;
+  background: #5e4b8b;
+  color: #fff;
 }
 
 /* Equal-height scheduling controls */
@@ -252,9 +254,18 @@ h1 {
   color: #fff;
   margin-top: 10px;
 }
+/* depressed on click */
 .save-btn:active {
   transform: translateY(2px);
   background: #45a049;
+}
+/* session-active state */
+.save-btn.active {
+  background: #e53935;
+  color: #fff;
+}
+.save-btn.active:hover {
+  background: #d32f2f;
 }
 
 /* Bottom navigation bar */
@@ -322,6 +333,7 @@ body.dark .immediate-btn:hover {
   background: #555;
 }
 
+/* Ensure “Minimum Acceptable Charge” label always starts on its own line */
 #v2gSettings label[for="balanceMin"] {
   display: block;
   margin-top: 20px;
