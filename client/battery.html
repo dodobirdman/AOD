@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Battery - Vehicle Charger Prototype</title>
+  <title>Battery – Vehicle Charger Prototype</title>
   <link rel="stylesheet" href="css/styles-battery.css" />
 </head>
 <body>
@@ -17,87 +17,100 @@
     <!-- Battery Icon Section -->
     <div class="battery-icon-section">
       <div class="battery-outline">
-        <div class="currentBattery" id="currentBattery">43%</div>
-        <div class="targetBattery" id="targetBattery"></div>
-        <div class="v2gMinLine" id="v2gMinLine">
+        <div class="currentBattery" id="currentBattery">--%</div>
+        <div class="targetBattery"  id="targetBattery"></div>
+        <div class="v2gMinLine"     id="v2gMinLine">
           <span class="line-icon">−</span>
         </div>
-        <div class="v2gMaxLine" id="v2gMaxLine">
+        <div class="v2gMaxLine"     id="v2gMaxLine">
           <span class="line-icon">+</span>
         </div>
       </div>
     </div>
+
+    <!-- Connection + Start Charging -->
+    <div class="connection-section">
+      <span class="connection-text">Car connected</span>
+      <button id="startChargingBtn" class="immediate-btn">Start Charging</button>
+    </div>
+
+    <hr class="separator scheduling-separator" />
+    <h2 class="sched-heading">Scheduling</h2>
+
+    <!-- Smart vs Manual Toggle -->
+    <div class="sched-toggle">
+      <button id="smartBtn"  class="sched-btn active">Smart Charging</button>
+      <button id="manualBtn" class="sched-btn">Manual Charging</button>
+    </div>
+
+    <!-- Smart Controls -->
+    <div id="smartControls" class="sched-controls">
+      <label for="targetSlider">Desired Morning Charge (%):</label>
+      <input type="range" id="targetSlider" min="0" max="100" />
+
+      <label for="departureTime">Departure Time:</label>
+      <input type="time" id="departureTime" class="compact-time" />
+    </div>
+
+    <!-- Manual Controls -->
+    <div id="manualControls" class="sched-controls" style="display:none;">
+      <label for="manualStartTime">Start Time:</label>
+      <input type="time" id="manualStartTime" class="compact-time" />
+
+      <label for="manualEndTime">End Time:</label>
+      <input type="time" id="manualEndTime" class="compact-time" />
+    </div>
+
     <hr class="separator" />
 
-    <!-- Controls Section -->
-    <div class="controls-section">
-      <!-- Desired Charge Level -->
-      <label for="targetSlider">Desired Morning Charge (%):</label>
-      <input
-        type="range"
-        id="targetSlider"
-        min="0"
-        max="100"
-        value="80"
-      />
+    <!-- V2G Balancing Toggle -->
+    <button id="toggleV2GBtn" class="toggle-btn">Enable V2G Balancing</button>
+    <div id="v2gSettings" class="v2g-settings" style="display: none;">
+      <label for="balanceStartTime">Balancing Start Time:</label>
+      <input type="time" id="balanceStartTime" class="compact-time" />
 
-      <!-- Departure Time -->
-      <label for="departureTime">Departure Time:</label>
-      <input
-        type="time"
-        id="departureTime"
-        value="07:00"
-        class="compact-time"
-      />
+      <label for="balanceEndTime">Balancing End Time:</label>
+      <input type="time" id="balanceEndTime" class="compact-time" />
 
-      <!-- V2G Balancing Toggle -->
-      <button id="toggleV2GBtn" class="toggle-btn">Enable V2G Balancing</button>
-
-      <!-- V2G Settings: only shown when enabled -->
-      <div id="v2gSettings" class="v2g-settings" style="display: none;">
-        <label for="balanceStartTime">Balancing Start Time:</label>
-        <input type="time" id="balanceStartTime" class="compact-time" />
-
-        <label for="balanceEndTime">Balancing End Time:</label>
-        <input type="time" id="balanceEndTime" class="compact-time" />
-
-        <label for="balanceMin">Minimum Acceptable Charge (%):</label>
-        <div class="margin-slider">
-          <input type="range" id="balanceMin" min="0" max="100" value="70" />
-          <output id="balanceMinVal">70%</output>
-        </div>
-
-        <label for="balanceMax">Maximum Acceptable Charge (%):</label>
-        <div class="margin-slider">
-          <input type="range" id="balanceMax" min="0" max="100" value="90" />
-          <output id="balanceMaxVal">90%</output>
-        </div>
+      <label for="balanceMin">Minimum Acceptable Charge (%):</label>
+      <div class="margin-slider">
+        <input type="range" id="balanceMin" min="0" max="100" />
+        <output id="balanceMinVal"></output>
       </div>
 
-      <!-- Expected Start Time, Estimated Cost & Immediate Button -->
-      <div class="start-cost-box small">
-        <div class="start-cost-info">
-          <div>
-            Charging starts at
-            <strong><span id="expectedStartTime">--:--</span></strong>
-          </div>
-          <div>
-            Est. Cost:
-            <strong><span id="estimatedCost">--.--</span> DKK</strong>
-          </div>
-        </div>
-        <button id="immediateBtn" class="immediate-btn">Charge Immediately</button>
+      <label for="balanceMax">Maximum Acceptable Charge (%):</label>
+      <div class="margin-slider">
+        <input type="range" id="balanceMax" min="0" max="100" />
+        <output id="balanceMaxVal"></output>
       </div>
-
-      <!-- Save Changes Button -->
-      <button id="saveChangesBtn" class="save-btn">Save Changes</button>
     </div>
+
+    <!-- Bottom Info Box -->
+    <div class="start-cost-box small">
+      <div class="start-cost-info">
+        <div id="startLine">
+          Charging starts at
+          <strong><span id="expectedStartTime">--:--</span></strong>
+        </div>
+        <div id="costLine">
+          Est. Cost:
+          <strong><span id="estimatedCost">--.--</span> DKK</strong>
+        </div>
+        <div id="creditLine">
+          Credits:
+          <strong><span id="estimatedCredits">0</span></strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Session -->
+    <button id="saveChangesBtn" class="save-btn">Start Session</button>
   </div>
 
   <!-- Bottom Nav -->
   <div class="tab-bar">
     <a href="battery.html" class="tab active"><span>Battery</span></a>
-    <a href="usage.html" class="tab"><span>Usage</span></a>
+    <a href="usage.html"   class="tab"><span>Usage</span></a>
   </div>
 
   <script src="js/battery.js"></script>

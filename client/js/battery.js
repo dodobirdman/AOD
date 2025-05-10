@@ -1,151 +1,250 @@
-// battery.js
 document.addEventListener('DOMContentLoaded', () => {
   // ── Load settings ───────────────────────────
-  const s = JSON.parse(localStorage.getItem('appSettings') || '{}');
-  document.body.classList.toggle('dark', s.theme==='dark');
+  const S = JSON.parse(localStorage.getItem('appSettings')||'{}');
+  document.body.classList.toggle('dark', S.theme==='dark');
+  const batterySize = parseFloat(S.battery)||0,
+        currentSoc  = parseFloat(S.soc)||0,
+        speed       = parseFloat(S.speed)||7.4,
+        region      = S.region||'DK2';
 
-  const batterySize  = parseFloat(s.battery) || 0;    // kWh
-  const currentSoc   = parseFloat(s.soc)     || 0;    // %
-  const speed        = parseFloat(s.speed)   || 7.4;  // kW
-  const region       = s.region              || 'DK2';// DK1/DK2
+  // ── Load last session inputs ─────────────────
+  const stored = JSON.parse(localStorage.getItem('batterySettings')||'{}');
 
-  // ── DOM refs ────────────────────────────────
-  const targetSlider   = document.getElementById('targetSlider');
-  const departureInput = document.getElementById('departureTime');
-  const toggleV2GBtn   = document.getElementById('toggleV2GBtn');
-  const v2gSettings    = document.getElementById('v2gSettings');
-  const balanceMin     = document.getElementById('balanceMin');
-  const balanceMax     = document.getElementById('balanceMax');
-  const balanceMinVal  = document.getElementById('balanceMinVal');
-  const balanceMaxVal  = document.getElementById('balanceMaxVal');
-  const currentBattery = document.getElementById('currentBattery');
-  const targetBattery  = document.getElementById('targetBattery');
-  const v2gMinLine     = document.getElementById('v2gMinLine');
-  const v2gMaxLine     = document.getElementById('v2gMaxLine');
-  const expectedEl     = document.getElementById('expectedStartTime');
-  const costEl         = document.getElementById('estimatedCost');
-  const immediateBtn   = document.getElementById('immediateBtn');
-
-  let v2gEnabled  = JSON.parse(localStorage.getItem('v2gEnabled'))  || false;
-  let chargingNow = JSON.parse(localStorage.getItem('chargingNow')) || false;
-
-  // ── Initialize V2G toggle & labels ──────────
-  toggleV2GBtn.classList.toggle('active', v2gEnabled);
-  toggleV2GBtn.textContent = v2gEnabled
-    ? 'Disable V2G Balancing'
-    : 'Enable V2G Balancing';
-  v2gSettings.style.display = v2gEnabled ? 'block' : 'none';
-
-  balanceMinVal.textContent = `${balanceMin.value}%`;
-  balanceMaxVal.textContent = `${balanceMax.value}%`;
-
-  immediateBtn.classList.toggle('active', chargingNow);
-  immediateBtn.textContent = chargingNow
-    ? 'Stop Charging'
-    : 'Charge Immediately';
-
-  // ── Core update function ────────────────────
-  async function updateDisplay() {
-    // % → fraction
-    const targetPct = +targetSlider.value;
-    const needPct   = Math.max(0, targetPct - currentSoc) / 100;
-    const kWhNeeded = batterySize * needPct;           // kWh
-    const totalHrs  = kWhNeeded / speed;               // float hours
-    const totalMins = Math.round(totalHrs * 60);
-
-    // ─ time calc ─
-    const [h,m]   = departureInput.value.split(':').map(Number);
-    const depMin  = h*60 + m;
-    const startMin= depMin - totalMins;
-    const sh      = Math.floor(startMin/60);
-    const sm      = (startMin % 60 + 60) % 60;
-    const dt      = new Date();
-    dt.setHours(sh, sm);
-    expectedEl.textContent = dt.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-
-    // ─ bars ─
-    currentBattery.style.width = `${currentSoc}%`;
-    currentBattery.textContent = `${currentSoc}%`;
-    targetBattery.style.left  = `${currentSoc}%`;
-    targetBattery.style.width = `${Math.max(0, targetPct - currentSoc)}%`;
-    targetBattery.textContent = targetPct>currentSoc ? `${targetPct}%` : '';
-
-    // ─ V2G ─
-    if (v2gEnabled) {
-      v2gSettings.style.display = 'block';
-      v2gMinLine.style.left     = `${+balanceMin.value}%`;
-      v2gMaxLine.style.left     = `${+balanceMax.value}%`;
-      v2gMinLine.style.display  =
-      v2gMaxLine.style.display  = 'block';
-    } else {
-      v2gSettings.style.display = 'none';
-      v2gMinLine.style.display  =
-      v2gMaxLine.style.display  = 'none';
+  // ── Cache prices ─────────────────────────────
+  let pricesCache = null;
+  async function getPrices() {
+    if (!pricesCache) {
+      const d    = new Date(),
+            YYYY = d.getFullYear(),
+            MM   = String(d.getMonth()+1).padStart(2,'0'),
+            DD   = String(d.getDate()).padStart(2,'0'),
+            url  = `https://www.elprisenligenu.dk/api/v1/prices/${YYYY}/${MM}-${DD}_${region}.json`;
+      pricesCache = await fetch(url).then(r=>r.json());
     }
-
-    // ─ fetch prices ─
-    const today = new Date();
-    const YYYY  = today.getFullYear();
-    const MM    = String(today.getMonth()+1).padStart(2,'0');
-    const DD    = String(today.getDate()).padStart(2,'0');
-    const url   = `https://www.elprisenligenu.dk/api/v1/prices/${YYYY}/${MM}-${DD}_${region}.json`;
-
-    const resp   = await fetch(url);
-    const prices = await resp.json();
-
-    // ─ cost calc ─
-    let remMins    = totalMins;
-    let cursorMin  = startMin;
-    let totalDKK   = 0;
-
-    while (remMins > 0) {
-      const hourIdx      = ((Math.floor(cursorMin/60)%24)+24)%24;
-      const pricePerKWh  = prices[hourIdx]?.DKK_per_kWh || 0;
-      const minsThisHour = Math.min(
-        remMins,
-        60 - ((cursorMin%60+60)%60)
-      );
-      const kWhThisHour  = speed * (minsThisHour/60);
-      totalDKK += kWhThisHour * pricePerKWh;
-      remMins   -= minsThisHour;
-      cursorMin += minsThisHour;
-    }
-
-    costEl.textContent = `${totalDKK.toFixed(2)}`;
+    return pricesCache;
   }
 
-  // ── Event listeners ────────────────────────
-  toggleV2GBtn.addEventListener('click', () => {
-    v2gEnabled = !v2gEnabled;
-    localStorage.setItem('v2gEnabled', JSON.stringify(v2gEnabled));
-    toggleV2GBtn.classList.toggle('active', v2gEnabled);
-    toggleV2GBtn.textContent = v2gEnabled
+  // ── DOM refs ────────────────────────────────
+  const smartBtn    = document.getElementById('smartBtn'),
+        manualBtn   = document.getElementById('manualBtn'),
+        smartCtrls  = document.getElementById('smartControls'),
+        manualCtrls = document.getElementById('manualControls'),
+        targetSl    = document.getElementById('targetSlider'),
+        depIn       = document.getElementById('departureTime'),
+        manStart    = document.getElementById('manualStartTime'),
+        manEnd      = document.getElementById('manualEndTime'),
+        toggleBtn   = document.getElementById('toggleV2GBtn'),
+        v2gSet      = document.getElementById('v2gSettings'),
+        bStartIn    = document.getElementById('balanceStartTime'),
+        bEndIn      = document.getElementById('balanceEndTime'),
+        bMin        = document.getElementById('balanceMin'),
+        bMax        = document.getElementById('balanceMax'),
+        bMinVal     = document.getElementById('balanceMinVal'),
+        bMaxVal     = document.getElementById('balanceMaxVal'),
+        currBar     = document.getElementById('currentBattery'),
+        targBar     = document.getElementById('targetBattery'),
+        minLine     = document.getElementById('v2gMinLine'),
+        maxLine     = document.getElementById('v2gMaxLine'),
+        startLine   = document.getElementById('startLine'),
+        costLine    = document.getElementById('costLine'),
+        creditLine  = document.getElementById('creditLine'),
+        creditEl    = document.getElementById('estimatedCredits'),
+        startBtn    = document.getElementById('startChargingBtn'),
+        saveBtn     = document.getElementById('saveChangesBtn');
+
+  let v2gOn = JSON.parse(localStorage.getItem('v2gEnabled'))||false;
+  let nowOn = JSON.parse(localStorage.getItem('chargingNow'))||false;
+  let mode  = 'smart';
+
+  // ── Restore stored inputs ────────────────────
+  if (stored.target         != null) targetSl.value        = stored.target;
+  if (stored.departure      ) depIn.value             = stored.departure;
+  if (stored.manualStartTime) manStart.value          = stored.manualStartTime;
+  if (stored.manualEndTime  ) manEnd.value            = stored.manualEndTime;
+  if (stored.balanceStartTime) bStartIn.value          = stored.balanceStartTime;
+  if (stored.balanceEndTime ) bEndIn.value            = stored.balanceEndTime;
+  if (stored.minMargin      ) bMin.value              = stored.minMargin;
+  if (stored.maxMargin      ) bMax.value              = stored.maxMargin;
+  bMinVal.textContent = `${bMin.value}%`;
+  bMaxVal.textContent = `${bMax.value}%`;
+
+  // ── Persist session inputs ───────────────────
+  function saveSettings() {
+    const out = {
+      target:           targetSl.value,
+      departure:        depIn.value,
+      manualStartTime:  manStart.value,
+      manualEndTime:    manEnd.value,
+      balanceStartTime: bStartIn.value,
+      balanceEndTime:   bEndIn.value,
+      minMargin:        bMin.value,
+      maxMargin:        bMax.value
+    };
+    localStorage.setItem('batterySettings', JSON.stringify(out));
+  }
+
+  // ── Reflect V2G toggle ──────────────────────
+  function reflectV2G() {
+    toggleBtn.classList.toggle('active', v2gOn);
+    toggleBtn.textContent = v2gOn
       ? 'Disable V2G Balancing'
       : 'Enable V2G Balancing';
-    updateDisplay();
+    v2gSet.style.display = v2gOn ? 'block' : 'none';
+    creditLine.style.display = v2gOn ? 'block' : 'none';
+  }
+
+  // ── Reflect charging button ─────────────────
+  function reflectNow() {
+    startBtn.classList.toggle('active', nowOn);
+    startBtn.textContent = nowOn ? 'Stop Charging' : 'Start Charging';
+  }
+
+  reflectV2G();
+  reflectNow();
+
+  // ── Smart charging update ───────────────────
+  async function updateSmart() {
+    saveSettings();
+    const tp     = +targetSl.value,
+          needP  = Math.max(0, tp - currentSoc) / 100,
+          kWhReq = batterySize * needP,
+          mins   = Math.round((kWhReq / speed) * 60);
+
+    // compute start time
+    const [h,m] = depIn.value.split(':').map(Number),
+          depM = h*60 + m,
+          stM  = depM - mins,
+          dt   = new Date();
+    dt.setHours(Math.floor(stM/60), (stM%60+60)%60);
+    const timeStr = dt.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+    // update bottom box
+    startLine.innerHTML = 
+      `Charging starts at <strong><span id="expectedStartTime">${timeStr}</span></strong>`;
+
+    // bars
+    currBar.style.width   = `${currentSoc}%`;
+    currBar.textContent   = `${currentSoc}%`;
+    targBar.style.left    = `${currentSoc}%`;
+    targBar.style.width   = `${Math.max(0,tp-currentSoc)}%`;
+    targBar.textContent   = tp>currentSoc ? `${tp}%` : '';
+
+    // V2G lines
+    if (v2gOn) {
+      minLine.style.left = `${+bMin.value}%`;
+      maxLine.style.left = `${+bMax.value}%`;
+      minLine.style.display = maxLine.style.display = 'block';
+    } else {
+      minLine.style.display = maxLine.style.display = 'none';
+    }
+
+    // cost
+    const prices = await getPrices();
+    let rem=mins, cursor=depM-mins, total=0;
+    while(rem>0){
+      const hr   = ((Math.floor(cursor/60)%24)+24)%24,
+            price= prices[hr]?.DKK_per_kWh||0,
+            into = (cursor%60+60)%60,
+            thisM= Math.min(rem,60-into),
+            kWhH = speed*(thisM/60);
+      total+= kWhH*price;
+      rem   -= thisM;
+      cursor+= thisM;
+    }
+    costLine.innerHTML = 
+      `Est. Cost: <strong><span id="estimatedCost">${total.toFixed(2)}</span> DKK</strong>`;
+
+    // credits
+    let credits=0;
+    if(v2gOn){
+      const [sh,sm]=bStartIn.value.split(':').map(Number),
+            [eh,em]=bEndIn.value.split(':').map(Number);
+      let sM=sh*60+sm, eM=eh*60+em;
+      if(eM<=sM) eM+=24*60;
+      const dur=eM-sM;
+      credits = Math.floor(dur/15)*5;
+    }
+    creditEl.textContent=credits;
+  }
+
+  // ── Manual charging update ──────────────────
+  async function updateManual() {
+    saveSettings();
+    const [sh,sm]=manStart.value.split(':').map(Number),
+          [eh,em]=manEnd.value.split(':').map(Number);
+    let sM=sh*60+sm, eM=eh*60+em;
+    if(eM<=sM) eM+=24*60;
+    const dur=eM-sM;
+
+    // SOC
+    const kWhGot = speed*(dur/60),
+          pctInc = (kWhGot/batterySize)*100,
+          newSoc = Math.min(100, currentSoc + pctInc);
+    startLine.innerHTML = 
+      `Estimated SOC: <strong><span id="expectedStartTime">${newSoc.toFixed(0)}%</span></strong>`;
+
+    // cost
+    const prices = await getPrices();
+    let rem=dur, cursor=sM, total=0;
+    while(rem>0){
+      const hr   = ((Math.floor(cursor/60)%24)+24)%24,
+            price= prices[hr]?.DKK_per_kWh||0,
+            into = (cursor%60+60)%60,
+            thisM= Math.min(rem,60-into),
+            kWhH = speed*(thisM/60);
+      total+= kWhH*price;
+      rem   -= thisM;
+      cursor+= thisM;
+    }
+    costLine.innerHTML = 
+      `Est. Cost: <strong><span id="estimatedCost">${total.toFixed(2)}</span> DKK</strong>`;
+
+    // credits
+    let credits=0;
+    if(v2gOn){
+      const [sh2,sm2]=bStartIn.value.split(':').map(Number),
+            [eh2,em2]=bEndIn.value.split(':').map(Number);
+      let sM2=sh2*60+sm2, eM2=eh2*60+em2;
+      if(eM2<=sM2) eM2+=24*60;
+      const dur2=eM2-sM2;
+      credits = Math.floor(dur2/15)*5;
+    }
+    creditEl.textContent=credits;
+  }
+
+  // ── Event wiring ────────────────────────────
+  targetSl.addEventListener('input', () => mode==='smart'  && updateSmart());
+  depIn.addEventListener('change', () => mode==='smart'  && updateSmart());
+  manStart.addEventListener('change', () => mode==='manual'&& updateManual());
+  manEnd.addEventListener('change', () => mode==='manual' && updateManual());
+  bStartIn.addEventListener('change', () => mode==='smart'?updateSmart():updateManual());
+  bEndIn.addEventListener('change',   () => mode==='smart'?updateSmart():updateManual());
+  bMin.addEventListener('input',     () => { bMinVal.textContent=`${bMin.value}%`; mode==='smart'&&updateSmart(); });
+  bMax.addEventListener('input',     () => { bMaxVal.textContent=`${bMax.value}%`; mode==='smart'&&updateSmart(); });
+
+  toggleBtn.addEventListener('click', () => {
+    v2gOn = !v2gOn;
+    localStorage.setItem('v2gEnabled',JSON.stringify(v2gOn));
+    reflectV2G();
+    mode==='smart'?updateSmart():updateManual();
   });
 
-  balanceMin.addEventListener('input', () => {
-    balanceMinVal.textContent = `${balanceMin.value}%`;
-    updateDisplay();
-  });
-  balanceMax.addEventListener('input', () => {
-    balanceMaxVal.textContent = `${balanceMax.value}%`;
-    updateDisplay();
+  smartBtn.addEventListener('click',() =>{ mode='smart'; smartBtn.classList.add('active'); manualBtn.classList.remove('active'); smartCtrls.style.display=''; manualCtrls.style.display='none'; updateSmart(); });
+  manualBtn.addEventListener('click',() =>{ mode='manual'; manualBtn.classList.add('active'); smartBtn.classList.remove('active'); smartCtrls.style.display='none'; manualCtrls.style.display=''; updateManual(); });
+
+  startBtn.addEventListener('click', () => {
+    nowOn = !nowOn;
+    localStorage.setItem('chargingNow',JSON.stringify(nowOn));
+    reflectNow();
   });
 
-  targetSlider.addEventListener('input', updateDisplay);
-  departureInput.addEventListener('change', updateDisplay);
-
-  immediateBtn.addEventListener('click', () => {
-    chargingNow = !chargingNow;
-    localStorage.setItem('chargingNow', JSON.stringify(chargingNow));
-    immediateBtn.classList.toggle('active', chargingNow);
-    immediateBtn.textContent = chargingNow
-      ? 'Stop Charging'
-      : 'Charge Immediately';
+  saveBtn.addEventListener('click', () => {
+    const info = document.getElementById('expectedStartTime').textContent;
+    saveBtn.textContent = mode==='smart'
+      ? `Charging starts at ${info}`
+      : `Estimated SOC: ${info}`;
   });
 
   // ── Kick off ───────────────────────────────
-  updateDisplay();
+  updateSmart();
 });
