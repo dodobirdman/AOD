@@ -8,110 +8,88 @@
   <link rel="stylesheet" href="css/styles-battery.css" />
 </head>
 <body>
-  <!-- Settings icon -->
-  <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
+  <div class="phone-screen-wrapper">
 
-  <div class="container">
-    <h1>Battery & V2G Settings</h1>
+    <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
 
-    <!-- Battery Icon Section -->
-    <div class="battery-icon-section">
-      <div class="battery-outline">
-        <div class="currentBattery" id="currentBattery">--%</div>
-        <div class="targetBattery"  id="targetBattery"></div>
-        <div class="v2gMinLine"     id="v2gMinLine">
-          <span class="line-icon">−</span>
-        </div>
-        <div class="v2gMaxLine"     id="v2gMaxLine">
-          <span class="line-icon">+</span>
-        </div>
-      </div>
-    </div>
+    <div class="container">
+      <h1>Battery & V2G Settings</h1>
 
-    <!-- Connection + Start Charging -->
-    <div class="connection-section">
-      <span class="connection-text">Car connected</span>
-      <button id="startChargingBtn" class="immediate-btn">Start Charging</button>
-    </div>
-
-    <hr class="separator scheduling-separator" />
-    <h2 class="sched-heading">Scheduling</h2>
-
-    <!-- Smart vs Manual Toggle -->
-    <div class="sched-toggle">
-      <button id="smartBtn"  class="sched-btn active">Smart Charging</button>
-      <button id="manualBtn" class="sched-btn">Manual Charging</button>
-    </div>
-
-    <!-- Smart Controls -->
-    <div id="smartControls" class="sched-controls">
-      <label for="targetSlider">Desired Morning Charge (%):</label>
-      <input type="range" id="targetSlider" min="0" max="100" />
-
-      <label for="departureTime">Departure Time:</label>
-      <input type="time" id="departureTime" class="compact-time" />
-    </div>
-
-    <!-- Manual Controls -->
-    <div id="manualControls" class="sched-controls" style="display:none;">
-      <label for="manualStartTime">Start Time:</label>
-      <input type="time" id="manualStartTime" class="compact-time" />
-
-      <label for="manualEndTime">End Time:</label>
-      <input type="time" id="manualEndTime" class="compact-time" />
-    </div>
-
-    <hr class="separator" />
-
-    <!-- V2G Balancing Toggle -->
-    <button id="toggleV2GBtn" class="toggle-btn">Enable V2G Balancing</button>
-    <div id="v2gSettings" class="v2g-settings" style="display: none;">
-      <label for="balanceStartTime">Balancing Start Time:</label>
-      <input type="time" id="balanceStartTime" class="compact-time" />
-
-      <label for="balanceEndTime">Balancing End Time:</label>
-      <input type="time" id="balanceEndTime" class="compact-time" />
-
-      <label for="balanceMin">Minimum Acceptable Charge (%):</label>
-      <div class="margin-slider">
-        <input type="range" id="balanceMin" min="0" max="100" />
-        <output id="balanceMinVal"></output>
-      </div>
-
-      <label for="balanceMax">Maximum Acceptable Charge (%):</label>
-      <div class="margin-slider">
-        <input type="range" id="balanceMax" min="0" max="100" />
-        <output id="balanceMaxVal"></output>
-      </div>
-    </div>
-
-    <!-- Bottom Info Box -->
-    <div class="start-cost-box small">
-      <div class="start-cost-info">
-        <div id="startLine">
-          Charging starts at
-          <strong><span id="expectedStartTime">--:--</span></strong>
-        </div>
-        <div id="costLine">
-          Est. Cost:
-          <strong><span id="estimatedCost">--.--</span> DKK</strong>
-        </div>
-        <div id="creditLine">
-          Credits:
-          <strong><span id="estimatedCredits">0</span></strong>
+      <!-- Battery Icon Section -->
+      <div class="battery-icon-section">
+        <div class="battery-outline">
+          <div class="currentBattery" id="currentBattery">--%</div>
+          <div class="targetBattery"  id="targetBattery"></div>
+          <div class="v2gMinLine"     id="v2gMinLine">
+            <span class="line-icon">−</span>
+          </div>
+          <div class="v2gMaxLine"     id="v2gMaxLine">
+            <span class="line-icon">+</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Start Session -->
-    <button id="saveChangesBtn" class="save-btn">Start Session</button>
-  </div>
+      <!-- Connection + Start Charging -->
+      <div class="connection-section">
+        <span class="connection-text">Car connected</span>
+        <button id="startChargingBtn" class="immediate-btn">Start Charging</button>
+      </div>
 
-  <!-- Bottom Nav -->
-  <div class="tab-bar">
-    <a href="battery.html" class="tab active"><span>Battery</span></a>
-    <a href="usage.html"   class="tab"><span>Usage</span></a>
-  </div>
+      <hr class="separator scheduling-separator" />
+      <h2 class="sched-heading">Scheduling</h2>
+
+      <!-- Smart vs Manual Toggle -->
+      <div class="sched-toggle">
+        <button id="smartBtn"  class="sched-btn active">Smart Charging</button>
+        <button id="manualBtn" class="sched-btn">Manual Charging</button>
+      </div>
+
+      <!-- Smart Controls -->
+      <div id="smartControls" class="sched-controls">
+        <label for="targetSlider">Desired Morning Charge (%):</label>
+        <input type="range" id="targetSlider" min="0" max="100" />
+
+        <label for="departureTime">Departure Time:</label>
+        <input type="time" id="departureTime" class="compact-time" />
+      </div>
+
+      <!-- Manual Controls -->
+      <div id="manualControls" class="sched-controls" style="display:none;">
+        <label for="manualStartTime">Start Time:</label>
+        <input type="time" id="manualStartTime" class="compact-time" />
+
+        <label for="manualEndTime">End Time:</label>
+        <input type="time" id="manualEndTime" class="compact-time" />
+      </div>
+
+      <hr class="separator" />
+
+      <!-- Bottom Info Box -->
+      <div class="start-cost-box small">
+        <div class="start-cost-info">
+          <div id="startLine">
+            Charging starts at
+            <strong><span id="expectedStartTime">--:--</span></strong>
+          </div>
+          <div id="costLine">
+            Est. Cost:
+            <strong><span id="estimatedCost">--.--</span> DKK</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start Session -->
+      <button id="saveChangesBtn" class="save-btn">Start Session</button>
+    </div> <!-- slut .container -->
+
+    <!-- Bottom Nav -->
+    <div class="tab-bar">
+      <a href="battery.html" class="tab active"> <span class="active-pill">Battery</span> </a>
+  <a href="balance.html" class="tab"> <span>Balance</span> </a>
+      <a href="usage.html"   class="tab"><span>Usage</span></a>
+    </div> <!-- slut .tab-bar -->
+
+  </div> <!-- slut .phone-screen-wrapper -->
 
   <script src="js/battery.js"></script>
 </body>

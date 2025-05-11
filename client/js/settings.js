@@ -1,7 +1,10 @@
+// js/settings.js
 document.addEventListener('DOMContentLoaded', () => {
-    const KEY = 'appSettings';
+    console.log('settings.js: DOMContentLoaded event fired.');
+    const KEY = 'appSettings'; 
+
     const els = {
-      theme:    document.getElementById('themeSelect'),
+      // theme:    document.getElementById('themeSelect'), // FJERNET hvis tema-select er væk fra HTML
       notifyT:  document.getElementById('notifyTarget'),
       notifyV:  document.getElementById('notifyV2G'),
       battery:  document.getElementById('batterySize'),
@@ -10,74 +13,138 @@ document.addEventListener('DOMContentLoaded', () => {
       region:   document.getElementById('regionToggle'),
       save:     document.getElementById('saveSettingsBtn'),
       clear:    document.getElementById('clearDataBtn'),
-      export:   document.getElementById('exportDataBtn'),
+      exportBtn:document.getElementById('exportDataBtn'),
       pwdForm:  document.getElementById('changePasswordForm'),
       newPwd:   document.getElementById('newPassword'),
       confirm:  document.getElementById('confirmPassword'),
     };
+    console.log('settings.js: DOM elements identified:', els);
   
-    // Load
-    const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
-    if (saved.theme)   els.theme.value   = saved.theme;
-    if (saved.notifyT) els.notifyT.checked = saved.notifyT;
-    if (saved.notifyV) els.notifyV.checked = saved.notifyV;
-    if (saved.battery) els.battery.value = saved.battery;
-    if (saved.soc)     els.soc.value     = saved.soc;
-    if (saved.speed)   els.speed.value   = saved.speed;
-    if (saved.region)  els.region.value  = saved.region;
-    applyTheme(saved.theme);
-  
-    // Save
-    els.save.addEventListener('click', () => {
-      const out = {
-        theme:    els.theme.value,
-        notifyT:  els.notifyT.checked,
-        notifyV:  els.notifyV.checked,
-        battery:  els.battery.value,
-        soc:      els.soc.value,
-        speed:    els.speed.value,
-        region:   els.region.value,
-      };
-      localStorage.setItem(KEY, JSON.stringify(out));
-      applyTheme(out.theme);
-      alert('Settings saved!');
-    });
-  
-    // Clear all
-    els.clear.addEventListener('click', () => {
-      if (confirm('Clear ALL local data?')) {
-        localStorage.clear();
-        location.reload();
+    function loadSettings() {
+      console.log('settings.js: Attempting to load settings from localStorage with KEY:', KEY);
+      const savedSettingsRaw = localStorage.getItem(KEY);
+      console.log('settings.js: Raw data from localStorage:', savedSettingsRaw);
+
+      if (savedSettingsRaw) {
+        try {
+          const saved = JSON.parse(savedSettingsRaw);
+          console.log('settings.js: Parsed settings:', saved);
+          
+          // if (els.theme && saved.theme !== undefined) els.theme.value = saved.theme; // FJERNET
+          if (els.notifyT && saved.notifyT !== undefined) els.notifyT.checked = saved.notifyT;
+          if (els.notifyV && saved.notifyV !== undefined) els.notifyV.checked = saved.notifyV;
+          if (els.battery && saved.battery !== undefined) els.battery.value = saved.battery;
+          if (els.soc && saved.soc !== undefined) els.soc.value = saved.soc;
+          if (els.speed && saved.speed !== undefined) els.speed.value = saved.speed;
+          if (els.region && saved.region !== undefined) els.region.value = saved.region;
+          
+          console.log('settings.js: Settings loaded and applied to form fields.');
+        } catch (e) {
+          console.error('settings.js: Error parsing saved settings from localStorage:', e);
+        }
+      } else {
+        console.log('settings.js: No saved settings found in localStorage.');
       }
-    });
-  
-    // Export
-    els.export.addEventListener('click', () => {
-      const data = {};
-      for (let i=0; i<localStorage.length; i++) {
-        const k = localStorage.key(i);
-        data[k] = JSON.parse(localStorage.getItem(k));
-      }
-      const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url; a.download = 'app-data.json'; a.click();
-      URL.revokeObjectURL(url);
-    });
-  
-    // PoC Change Password
-    els.pwdForm.addEventListener('submit', e => {
-      e.preventDefault();
-      if (!els.newPwd.value || !els.confirm.value)
-        return alert('Fill both fields.');
-      if (els.newPwd.value !== els.confirm.value)
-        return alert('Passwords do not match.');
-      alert('Password changed (PoC)');
-      els.pwdForm.reset();
-    });
-  
-    function applyTheme(t) {
-      document.body.classList.toggle('dark', t==='dark');
     }
-  });
+
+    function saveSettings() {
+      console.log('settings.js: saveSettings function called.');
+      const settingsToSave = {
+        // theme:    els.theme ? els.theme.value : 'light', // FJERNET
+        notifyT:  els.notifyT ? els.notifyT.checked : false,
+        notifyV:  els.notifyV ? els.notifyV.checked : false,
+        battery:  els.battery ? els.battery.value : '', 
+        soc:      els.soc ? els.soc.value : '',       
+        speed:    els.speed ? els.speed.value : '',     
+        region:   els.region ? els.region.value : 'DK2', 
+      };
+      // Sletter theme-egenskab hvis den eksisterer fra gamle versioner, for at rydde op
+      if (settingsToSave.hasOwnProperty('theme')) {
+          delete settingsToSave.theme;
+      }
+      console.log('settings.js: Settings to save:', settingsToSave);
+
+      try {
+        localStorage.setItem(KEY, JSON.stringify(settingsToSave));
+        console.log('settings.js: Settings successfully saved to localStorage with KEY:', KEY);
+        alert('Settings saved!');
+      } catch (e) {
+        console.error('settings.js: Error saving settings to localStorage:', e);
+        alert('Error: Could not save settings. LocalStorage might be full or unavailable.');
+      }
+    }
+
+    if (els.save) {
+      els.save.addEventListener('click', saveSettings);
+      console.log('settings.js: Event listener attached to save button.');
+    } else {
+      console.warn('settings.js: Save button (saveSettingsBtn) not found in HTML.');
+    }
   
+    if (els.clear) { /* ... (clear logic as before) ... */ 
+        els.clear.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear ALL local data? This cannot be undone.')) {
+            localStorage.clear();
+            alert('All local data has been cleared. The page will now reload.');
+            location.reload();
+            }
+        });
+        console.log('settings.js: Event listener attached to clear button.');
+    } else {
+        console.log('settings.js: Clear button (clearDataBtn) not found in HTML. Listener not attached.');
+    }
+  
+    if (els.exportBtn) { /* ... (export logic as before) ... */
+        els.exportBtn.addEventListener('click', () => {
+            const dataToExport = {};
+            for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k) { 
+                try {
+                dataToExport[k] = JSON.parse(localStorage.getItem(k));
+                } catch (e) {
+                dataToExport[k] = localStorage.getItem(k); 
+                }
+            }
+            }
+            const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'vehicle-charger-prototype-data.json';
+            document.body.appendChild(a); 
+            a.click();
+            document.body.removeChild(a); 
+            URL.revokeObjectURL(url);
+            alert('Data exported as vehicle-charger-prototype-data.json');
+        });
+        console.log('settings.js: Event listener attached to export button.');
+    } else {
+        console.log('settings.js: Export button (exportDataBtn) not found in HTML. Listener not attached.');
+    }
+    
+    if (els.pwdForm) { /* ... (password form logic as before) ... */ 
+        els.pwdForm.addEventListener('submit', e => {
+            e.preventDefault();
+            if (!els.newPwd || !els.confirm) return; 
+
+            const newPasswordValue = els.newPwd.value;
+            const confirmPasswordValue = els.confirm.value;
+
+            if (!newPasswordValue || !confirmPasswordValue) {
+            alert('Please fill in both password fields.');
+            return;
+            }
+            if (newPasswordValue !== confirmPasswordValue) {
+            alert('Passwords do not match.');
+            return;
+            }
+            alert('Password changed successfully (Prototype - not securely stored).');
+            els.pwdForm.reset();
+        });
+        console.log('settings.js: Event listener attached to password form.');
+    } else {
+      console.log('settings.js: Password form (changePasswordForm) not found in HTML. Listener not attached.');
+    }
+    loadSettings();
+});

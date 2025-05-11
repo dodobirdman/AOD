@@ -5,42 +5,49 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Usage - Vehicle Charger Prototype</title>
-  <link rel="stylesheet" href="css/styles-usage.css" />
+  <link rel="stylesheet" href="css/styles-usage.css" /> <!-- Sørg for at denne fil eksisterer -->
 </head>
 <body>
-  <!-- Settings icon -->
-  <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
+  <div class="phone-screen-wrapper">
 
-  <div class="container">
-    <h1>Usage</h1>
-    <div class="metrics">
-      <div class="metric-card">
-        <h2>Total kWh Charged</h2>
-        <p id="totalCharged">0 kWh</p>
+ <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
+
+
+    <!-- Du kan tilføje .settings-icon her også, hvis ønsket -->
+    <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
+
+    <div class="container">
+      <h1>Usage</h1>
+      <div class="metrics">
+        <div class="metric-card">
+          <h2>Total kWh Charged</h2>
+          <p id="totalCharged">0 kWh</p>
+        </div>
+        <div class="metric-card">
+          <h2>Total kWh Fed Back</h2>
+          <p id="totalFedBack">0 kWh</p>
+        </div>
+        <div class="metric-card">
+          <h2>Total Cost</h2>
+          <p id="totalCost">0.00 DKK</p>
+        </div>
       </div>
-      <div class="metric-card">
-        <h2>Total kWh Fed Back</h2>
-        <p id="totalFedBack">0 kWh</p>
+
+      <h2>Recent Charging Sessions</h2>
+      <div class="session-list" id="sessionList">
+        <!-- Populated by JS -->
       </div>
-      <div class="metric-card">
-        <h2>Total Cost</h2>
-        <p id="totalCost">0.00 DKK</p>
-      </div>
-    </div>
+    </div> <!-- slut .container -->
 
-    <!-- Recent Sessions -->
-    <h2>Recent Charging Sessions</h2>
-    <div class="session-list" id="sessionList">
-      <!-- Populated by JS -->
-    </div>
-  </div>
+    <!-- Bottom Nav -->
+    <div class="tab-bar">
+      <a href="battery.html" class="tab"><span>Battery</span></a>
+      <a href="balance.html" class="tab"><span>Balance</span></a>
+      <a href="usage.html" class="tab active"><span class="active-pill">Usage</span></a>
+    </div> <!-- slut .tab-bar -->
 
-  <!-- Bottom Nav -->
-  <div class="tab-bar">
-    <a href="battery.html" class="tab"><span>Battery</span></a>
-    <a href="usage.html" class="tab active"><span>Usage</span></a>
-  </div>
+  </div> <!-- slut .phone-screen-wrapper -->
 
-  <script src="js/usage.js"></script>
+  <script src="js/usage.js"></script> <!-- Sørg for at denne fil eksisterer -->
 </body>
 </html>
