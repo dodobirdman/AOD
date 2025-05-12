@@ -198,6 +198,17 @@ body {
 #saveBalanceSettingsBtn:hover { background-color: #45a049; box-shadow: 0 5px 10px rgba(76, 175, 80, 0.4); }
 #saveBalanceSettingsBtn:active { transform: translateY(1px); box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3); }
 
+#saveBalanceSettingsBtn.active {
+  background: #e53935;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(229, 57, 53, 0.3);
+}
+
+#saveBalanceSettingsBtn.active:hover {
+  background: #d32f2f;
+  box-shadow: 0 5px 10px rgba(229, 57, 53, 0.4);
+}
+
 .tab-bar {
   width: 100%;
   background-color: #ffffff; 

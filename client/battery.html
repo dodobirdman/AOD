@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Battery – Vehicle Charger Prototype</title>
+  <title>Batteri Indstillinger - Køretøjsoplader Prototype</title>
   <link rel="stylesheet" href="css/styles-battery.css" />
 </head>
 <body>
@@ -13,7 +13,7 @@
     <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div>
 
     <div class="container">
-      <h1>Battery & V2G Settings</h1>
+      <h1>Batteri </h1>
 
       <!-- Battery Icon Section -->
       <div class="battery-icon-section">
@@ -31,48 +31,48 @@
 
       <!-- Connection + Start Charging -->
       <div class="connection-section">
-        <span class="connection-text">Car connected</span>
-        <button id="startChargingBtn" class="immediate-btn">Start Charging</button>
+        <span class="connection-text">Bil tilsluttet</span>
+        <button id="startChargingBtn" class="immediate-btn">Start Opladning</button>
       </div>
 
       <hr class="separator scheduling-separator" />
-      <h2 class="sched-heading">Scheduling</h2>
+      <h2 class="sched-heading">Planlægning</h2>
 
       <!-- Smart vs Manual Toggle -->
       <div class="sched-toggle">
-        <button id="smartBtn"  class="sched-btn active">Smart Charging</button>
-        <button id="manualBtn" class="sched-btn">Manual Charging</button>
+        <button id="smartBtn"  class="sched-btn active">Smart Opladning</button>
+        <button id="manualBtn" class="sched-btn">Manuel Opladning</button>
       </div>
 
       <!-- Smart Controls -->
       <div id="smartControls" class="sched-controls">
-        <label for="targetSlider">Desired Morning Charge (%):</label>
+        <label for="targetSlider">Ønsket Morgenopladning (%):</label>
         <input type="range" id="targetSlider" min="0" max="100" />
 
-        <label for="departureTime">Departure Time:</label>
+        <label for="departureTime">Afgangstid:</label>
         <input type="time" id="departureTime" class="compact-time" />
       </div>
 
       <!-- Manual Controls -->
       <div id="manualControls" class="sched-controls" style="display:none;">
-        <label for="manualStartTime">Start Time:</label>
+        <label for="manualStartTime">Starttid:</label>
         <input type="time" id="manualStartTime" class="compact-time" />
 
-        <label for="manualEndTime">End Time:</label>
+        <label for="manualEndTime">Sluttid:</label>
         <input type="time" id="manualEndTime" class="compact-time" />
       </div>
 
       <hr class="separator" />
 
       <!-- Bottom Info Box -->
-      <div class="start-cost-box small">
+      <div class="start-cost-box small"> 
         <div class="start-cost-info">
           <div id="startLine">
-            Charging starts at
+            Opladning starter kl.
             <strong><span id="expectedStartTime">--:--</span></strong>
           </div>
           <div id="costLine">
-            Est. Cost:
+            Est. Pris:
             <strong><span id="estimatedCost">--.--</span> DKK</strong>
           </div>
         </div>
@@ -84,9 +84,9 @@
 
     <!-- Bottom Nav -->
     <div class="tab-bar">
-      <a href="battery.html" class="tab active"> <span class="active-pill">Battery</span> </a>
-  <a href="balance.html" class="tab"> <span>Balance</span> </a>
-      <a href="usage.html"   class="tab"><span>Usage</span></a>
+      <a href="battery.html" class="tab active"> <span class="active-pill">Batteri</span> </a>
+  <a href="balance.html" class="tab"> <span>Balance</span> </a> 
+      <a href="usage.html"   class="tab"><span>Forbrug</span></a>
     </div> <!-- slut .tab-bar -->
 
   </div> <!-- slut .phone-screen-wrapper -->

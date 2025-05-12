@@ -1,35 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Settings – Vehicle Charger Prototype</title>
+  <title>Indstillinger – Køretøjsoplader Prototype</title>
   <link rel="stylesheet" href="css/styles-settings.css" />
 </head>
 <body>
   <div class="phone-screen-wrapper">
 
-    <button class="back-btn" onclick="window.location='battery.html'">← Back</button>
+    <button class="back-btn" onclick="window.location='battery.html'">← Tilbage</button>
     <!-- Settings icon kan fjernes herfra, da man ER på settings siden -->
     <!-- <div class="settings-icon" onclick="window.location='settings.html'">⚙️</div> -->
 
     <div class="container">
-      <h1>Settings</h1>
+      <h1>Indstillinger</h1>
 
       <!-- Car config -->
       <div class="setting-item">
-        <label for="batterySize">Battery Capacity (kWh)</label>
-        <input type="number" id="batterySize" min="0" step="0.1" placeholder="e.g. 60" />
+        <label for="batterySize">Batterikapacitet (kWh)</label>
+        <input type="number" id="batterySize" min="0" step="0.1" placeholder="f.eks. 60" />
       </div>
       <div class="setting-item">
-        <label for="currentSoc">Current State of Charge (%)</label>
-        <input type="number" id="currentSoc" min="0" max="100" step="1" placeholder="e.g. 43" />
+        <label for="currentSoc">Nuværende Opladningsstatus (%)</label>
+        <input type="number" id="currentSoc" min="0" max="100" step="1" placeholder="f.eks. 43" />
       </div>
 
       <!-- Charge speed -->
       <div class="setting-item">
-        <label for="chargeSpeed">Charging Speed</label>
+        <label for="chargeSpeed">Opladningshastighed</label>
         <select id="chargeSpeed">
           <option value="7.4">7.4 kW</option>
           <option value="11">11 kW</option>
@@ -38,30 +38,28 @@
 
       <!-- Region DK1 / DK2 -->
       <div class="setting-item toggle-item">
-        <label for="regionToggle">Region</label>
+        <label for="regionToggle">Prisområde</label>
         <select id="regionToggle">
           <option value="DK1">DK1 (Vest for Storebælt)</option>
           <option value="DK2">DK2 (Øst for Storebælt)</option>
         </select>
       </div>
 
-     
-
       <!-- Notifications -->
       <div class="setting-item toggle-item">
-        <label>Notify on target reached</label>
+        <label>Notifikation ved opnået mål</label>
         <input type="checkbox" id="notifyTarget" />
       </div>
       <div class="setting-item toggle-item">
-        <label>Notify on V2G events</label>
+        <label>Notifikation ved V2G-hændelser</label>
         <input type="checkbox" id="notifyV2G" />
       </div>
       
       <!-- Data & Privacy (Udkommenteret fra din tidligere HTML, kan genindsættes hvis du har knapperne) -->
       <!--
       <div class="setting-item button-group">
-        <button id="exportDataBtn" class="btn secondary">Export Data</button>
-        <button id="clearDataBtn"  class="btn danger">Clear All Data</button>
+        <button id="exportDataBtn" class="btn secondary">Eksporter Data</button>
+        <button id="clearDataBtn"  class="btn danger">Slet Alle Data</button>
       </div>
       -->
 
@@ -69,26 +67,26 @@
       <!--
       <form id="changePasswordForm">
         <div class="setting-item">
-          <label for="newPassword">New Password</label>
-          <input type="password" id="newPassword" placeholder="Enter new password" />
+          <label for="newPassword">Ny Adgangskode</label>
+          <input type="password" id="newPassword" placeholder="Indtast ny adgangskode" />
         </div>
         <div class="setting-item">
-          <label for="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" placeholder="Confirm new password" />
+          <label for="confirmPassword">Bekræft Adgangskode</label>
+          <input type="password" id="confirmPassword" placeholder="Bekræft ny adgangskode" />
         </div>
-        <button type="submit" class="btn">Change Password</button>
+        <button type="submit" class="btn">Skift Adgangskode</button>
       </form>
       -->
 
       <!-- Save -->
-      <button id="saveSettingsBtn" class="save-btn">Save Settings</button>
+      <button id="saveSettingsBtn" class="save-btn">Gem Indstillinger</button>
     </div> <!-- slut .container -->
 
     <!-- Bottom Tab Bar -->
     <div class="tab-bar">
-      <a href="battery.html" class="tab"><span>Battery</span></a>
-      <a href="balance.html" class="tab"><span>Balance</span></a>
-      <a href="usage.html"   class="tab"><span>Usage</span></a>
+      <a href="battery.html" class="tab"><span>Batteri</span></a>
+      <a href="balance.html" class="tab"><span>Balance</span></a> <!-- "Balance" beholdes ofte, men kan ændres til "Netbalance" -->
+      <a href="usage.html"   class="tab"><span>Forbrug</span></a>
     </div> <!-- slut .tab-bar -->
 
   </div> <!-- slut .phone-screen-wrapper -->

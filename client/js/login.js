@@ -13,12 +13,12 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
   });
   
   document.getElementById('setupBtn').addEventListener('click', function() {
-    const username = prompt("Enter new username:");
-    const password = prompt("Enter new password:");
+    const username = prompt("Indtast nyt brugernavn:");
+    const password = prompt("Indtast ny adgangskode:");
   
     if (username && password) {
       localStorage.setItem('user', JSON.stringify({ username, password }));
-      alert("Account created! Please log in now.");
+      alert("Konto oprettet! Log venligst ind nu.");
     }
   });
   

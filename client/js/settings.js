@@ -67,10 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         localStorage.setItem(KEY, JSON.stringify(settingsToSave));
         console.log('settings.js: Settings successfully saved to localStorage with KEY:', KEY);
-        alert('Settings saved!');
+        alert('Indstillinger gemt!');
       } catch (e) {
         console.error('settings.js: Error saving settings to localStorage:', e);
-        alert('Error: Could not save settings. LocalStorage might be full or unavailable.');
+        alert('Fejl: Kunne ikke gemme indstillinger. LocalStorage er muligvis fuld eller utilgængelig.');
       }
     }
 
@@ -83,9 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
     if (els.clear) { /* ... (clear logic as before) ... */ 
         els.clear.addEventListener('click', () => {
-            if (confirm('Are you sure you want to clear ALL local data? This cannot be undone.')) {
+            if (confirm('Er du sikker på, at du vil slette ALLE lokale data? Dette kan ikke fortrydes.')) {
             localStorage.clear();
-            alert('All local data has been cleared. The page will now reload.');
+            alert('Alle lokale data er blevet slettet. Siden genindlæses nu.');
             location.reload();
             }
         });
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             a.click();
             document.body.removeChild(a); 
             URL.revokeObjectURL(url);
-            alert('Data exported as vehicle-charger-prototype-data.json');
+            alert('Data eksporteret som vehicle-charger-prototype-data.json');
         });
         console.log('settings.js: Event listener attached to export button.');
     } else {
@@ -132,14 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const confirmPasswordValue = els.confirm.value;
 
             if (!newPasswordValue || !confirmPasswordValue) {
-            alert('Please fill in both password fields.');
+            alert('Udfyld venligst begge adgangskodefelter.');
             return;
             }
             if (newPasswordValue !== confirmPasswordValue) {
-            alert('Passwords do not match.');
+            alert('Adgangskoderne stemmer ikke overens.');
             return;
             }
-            alert('Password changed successfully (Prototype - not securely stored).');
+            alert('Adgangskode ændret succesfuldt (Prototype - gemmes ikke sikkert).');
             els.pwdForm.reset();
         });
         console.log('settings.js: Event listener attached to password form.');

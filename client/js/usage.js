@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // ── Load settings ───────────────────────────
   const settings = JSON.parse(localStorage.getItem('appSettings')||'{}');
-  document.body.classList.toggle('dark', settings.theme==='dark');
-  const pricePerKWh = parseFloat(settings.defaultCost) || 2.90;
+  const pricePerKWh = parseFloat(settings.defaultCost) || 2.90; // Antager at defaultCost stadig kan være i settings
   const currency    = settings.currency || 'DKK';
 
   // ── Monthly summary ─────────────────────────
@@ -16,25 +15,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Recent sessions ──────────────────────────
   const sessions = [
-    { date:'Apr 12, 2025', charged:35, fedBack:5 },
-    { date:'Apr 11, 2025', charged:30, fedBack:0 },
-    { date:'Apr 10, 2025', charged:40, fedBack:10 },
-    { date:'Apr 08, 2025', charged:25, fedBack:0 },
-    { date:'Apr 05, 2025', charged:20, fedBack:2 },
-    { date:'Apr 02, 2025', charged:35, fedBack:8 },
-    { date:'Apr 01, 2025', charged:28, fedBack:0 }
+    // Ændret datoformat til ISO 8601 for nemmere parsing og lokalisering
+    { dateString:'2025-04-12', charged:35, fedBack:5 },
+    { dateString:'2025-04-11', charged:30, fedBack:0 },
+    { dateString:'2025-04-10', charged:40, fedBack:10 },
+    { dateString:'2025-04-08', charged:25, fedBack:0 },
+    { dateString:'2025-04-05', charged:20, fedBack:2 },
+    { dateString:'2025-04-02', charged:35, fedBack:8 },
+    { dateString:'2025-04-01', charged:28, fedBack:0 }
   ];
 
   const listEl = document.getElementById('sessionList');
   sessions.forEach(s => {
     const netCost = (s.charged - s.fedBack) * pricePerKWh;
+    const dateObj = new Date(s.dateString);
+    const formattedDate = dateObj.toLocaleDateString('da-DK', {
+      day: 'numeric',
+      month: 'short', // 'short' giver f.eks. "apr."
+      year: 'numeric'
+    });
+
     const card = document.createElement('div');
     card.className = 'session-card';
     card.innerHTML = `
-      <h3>${s.date}</h3>
-      <p>Charged: ${s.charged} kWh</p>
-      <p>Fed Back: ${s.fedBack} kWh</p>
-      <p>Session Cost: ${netCost.toFixed(2)} ${currency}</p>
+      <h3>${formattedDate}</h3>
+      <p>Opladt: ${s.charged} kWh</p>
+      <p>Leveret tilbage: ${s.fedBack} kWh</p>
+      <p>Pris for session: ${netCost.toFixed(2)} ${currency}</p>
     `;
     listEl.appendChild(card);
   });
