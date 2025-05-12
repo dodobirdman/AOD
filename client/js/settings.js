@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         localStorage.setItem(KEY, JSON.stringify(settingsToSave));
         console.log('settings.js: Settings successfully saved to localStorage with KEY:', KEY);
-        alert('Indstillinger gemt!');
+        window.location.href = 'battery.html';
       } catch (e) {
         console.error('settings.js: Error saving settings to localStorage:', e);
         alert('Fejl: Kunne ikke gemme indstillinger. LocalStorage er muligvis fuld eller utilgængelig.');
