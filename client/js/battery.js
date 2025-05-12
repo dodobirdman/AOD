@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     opdaterSoC(nySoC) { this.nuværendeSoC = Math.min(100, Math.max(0, nySoC)); return this.nuværendeSoC; }
   }
 
-  const elbil = new Elbil(80, 11, 25);
+  const elbil = new Elbil(0, 0, 0);
   let appS = {};
 
   function refreshElbilFromSettings() {
@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentAppSettingsRaw) {
       console.error("battery.js: appSettings not found in localStorage. Using hardcoded defaults for elbil & appS.");
       elbil.kapacitetKWh = 60;
-      elbil.maxLadeeffekt = 7.4;
+      elbil.maxLadeeffekt = 11;
       elbil.nuværendeSoC = 25;
-      appS = { battery: "60", speed: "7.4", soc: "25", region: "DK2" }; // Fjernet theme
-      // document.body.classList.remove('dark'); document.body.classList.add('light'); // FJERNET
+      appS = { battery: "60", speed: "7.4", soc: "25", region: "DK2" };
+
       return appS;
     }
     appS = JSON.parse(currentAppSettingsRaw);
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elbil.maxLadeeffekt = parseFloat(appS.speed) || 7.4;
     elbil.nuværendeSoC = parseFloat(appS.soc) || 0;
     console.log('battery.js: Elbil refreshed:', elbil, 'appS refreshed:', appS);
-    // document.body.classList.toggle('dark', appS.theme === 'dark'); // FJERNET
+
     return appS;
   }
 
@@ -232,8 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function updateManual() {
-    // ... (updateManual logic as before, men uden creditLine og creditEl) ...
-    console.log('battery.js: updateManual CALLED');
+
     refreshElbilFromSettings();
     persistBatteryPageInputs();
 
@@ -289,7 +288,13 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error("battery.js: Insufficient price data for cost calculation (manual).");
       costLine.innerHTML = `Est. Pris: <strong>Prisdata utilgængelig</strong>`;
     } else {
-      let rem = dur, cursor = sM, total = 0;
+      // cap manual charging at 100% SoC
+      const neededKWh = ((100 - currentSoC) / 100) * elbil.kapacitetKWh;
+      const minutesToFull = elbil.maxLadeeffekt > 0
+        ? (neededKWh / elbil.maxLadeeffekt) * 60
+        : 0;
+      const actualDur = Math.min(dur, minutesToFull);
+      let rem = actualDur, cursor = sM, total = 0;
       console.log(`battery.js (manual): Cost calc. Duration: ${dur}, StartM: ${sM}`);
       while (rem > 0) {
         const hr = ((Math.floor(cursor / 60) % 24) + 24) % 24;
