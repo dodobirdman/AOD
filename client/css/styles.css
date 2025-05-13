@@ -1,13 +1,11 @@
 /* client/css/styles.css */
 
-/* Reset defaults */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
   
-  /* Container styling */
   .container {
     max-width: 600px;
     margin: 0 auto;
@@ -15,19 +13,16 @@
     font-family: Arial, sans-serif;
   }
   
-  /* Basic body style */
   body {
     background-color: #fff;
     color: #333;
   }
   
-  /* Heading styles */
   h1, h2 {
     color: #5e4b8b;
     margin-bottom: 20px;
   }
   
-  /* Input fields styling */
   input[type="text"],
   input[type="password"],
   input[type="time"],
@@ -39,7 +34,6 @@
     border-radius: 5px;
   }
   
-  /* Button styling */
   button {
     padding: 10px 20px;
     background-color: #5e4b8b;
@@ -50,7 +44,6 @@
     cursor: pointer;
   }
   
-  /* Battery display container */
   .battery {
     width: 100%;
     height: 50px;
@@ -61,7 +54,6 @@
     background-color: #fff;
   }
   
-  /* Battery level visual */
   .battery-level {
     height: 100%;
     background-color: #5e4b8b;
@@ -71,7 +63,6 @@
     border-radius: 8px 0 0 8px;
   }
   
-  /* Section margins */
   .battery-section, .departure-section, .charging-actions {
     margin-bottom: 30px;
   }

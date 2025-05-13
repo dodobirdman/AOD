@@ -5,10 +5,10 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
   
-    // Store in localStorage (fake "account" data)
+    // Gemmer bare i klientens localStorage for prototypens skyld
     localStorage.setItem('user', JSON.stringify({ username, password }));
   
-    // After login, go to the Battery (Home) page
+    // Videresendere til battery.html
     window.location.href = 'battery.html';
   });
   

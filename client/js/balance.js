@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   console.log('balance.js: DOMContentLoaded event fired.');
 
-  // START: DOMAIN MODEL CLASSES 
+  // Laver klasser til at håndtere bil, sessioner og balancering 
   class Elbil {
     constructor(kapacitetKWh, nuværendeSoC) {
       this.kapacitetKWh = kapacitetKWh;
@@ -54,19 +54,18 @@ document.addEventListener('DOMContentLoaded', function () {
       this.samledeYdelser = [];
     }
     tilfoejYdelse(ydelse) {
-      // console.log('Kredit.tilfoejYdelse CALLED with ydelse:', ydelse); 
+      
       if (ydelse && typeof ydelse.varighedMinutter === 'number' && ydelse.varighedMinutter > 0) {
         this.samledeYdelser.push(ydelse);
         const creditsForThisYdelse = Math.floor(ydelse.varighedMinutter / 15) * 5;
         this.kreditSaldo += creditsForThisYdelse;
-        // console.log(`Kredit.tilfoejYdelse: varighedMinutter=${ydelse.varighedMinutter.toFixed(0)}, creditsAdded=${creditsForThisYdelse}, newSaldo=${this.kreditSaldo}`);
+
       } else {
-        // console.warn('Kredit.tilfoejYdelse: Invalid ydelse or varighedMinutter (<=0). Ydelse:', ydelse);
       }
     }
     visSaldo() { return this.kreditSaldo; }
   }
-  // SLUT: DOMAIN MODEL CLASSES
+  // --- DOM-elementer og initialisering ---
 
   const radioButtons = document.getElementsByName('balanceMode');
   const timedSettingsDiv = document.getElementById('timedSettings');
@@ -90,10 +89,16 @@ document.addEventListener('DOMContentLoaded', function () {
   const BALANCE_SETTINGS_KEY = 'balanceSettings';
   const APP_SETTINGS_KEY = 'appSettings';
   
+
   let balanceSessionActive = JSON.parse(localStorage.getItem('balanceSessionActive')) || false;
     let balanceSessionInfo   = localStorage.getItem('balanceSessionInfo') || '';
 
-    // helper to mirror the Battery page’s “Start Session” look
+    // Viser session info i UI
+    const sessionInfoEl = document.getElementById('balanceSessionInfo');
+    if (sessionInfoEl) {
+      sessionInfoEl.textContent = balanceSessionInfo;
+      sessionInfoEl.style.display = balanceSessionActive ? 'block' : 'none';
+    }                                             
     function reflectBalanceSessionBtn() {
       if (balanceSessionActive) {
         saveBalanceSettingsBtn.classList.add('active');
@@ -106,25 +111,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
   console.log('balance.js: DOM elements identified.');
 
+  // --- Funktioner til at opdatere UI og håndtere indstillinger ---
   function updateV2GCreditsDisplay() {
     console.log('balance.js: updateV2GCreditsDisplay CALLED');
     const appSettingsRaw = localStorage.getItem(APP_SETTINGS_KEY);
-    // const balanceSettingsRaw = localStorage.getItem(BALANCE_SETTINGS_KEY); // Ikke nødvendig her, da vi bruger input.value direkte
 
-    if (!appSettingsRaw) { // Vi behøver kun appSettings for SoC og kapacitet
+    if (!appSettingsRaw) { 
       console.error("balance.js: appSettings not found in localStorage for credit calculation.");
       if (estimatedV2GCreditsEl) estimatedV2GCreditsEl.textContent = "N/A";
       if (creditsDisplaySectionEl) creditsDisplaySectionEl.style.display = 'none';
       return;
     }
     const appSettings = JSON.parse(appSettingsRaw);
-    // const currentBalanceSettings = JSON.parse(balanceSettingsRaw); 
+    
 
     const tempElbil = new Elbil(
       parseFloat(appSettings.battery) || 60,
       parseFloat(appSettings.soc) || 0
     );
-    // console.log('balance.js: tempElbil for credits:', tempElbil); // Kan genaktiveres
+    
 
     let credits = 0;
     const v2gEnabled = toggleV2GOverallBtn.classList.contains('active');
@@ -132,12 +137,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedMode = selectedModeRadio ? selectedModeRadio.value : 'always';
     console.log('balance.js: updateV2GCreditsDisplay - v2gEnabled:', v2gEnabled, 'selectedMode:', selectedMode);
 
+    // Opdaterer UI for V2G kreditter
     if (v2gEnabled && creditsDisplaySectionEl) {
       creditsDisplaySectionEl.style.display = 'block';
       let durationMinutes = 0;
 
       if (selectedMode === 'timed') {
-        // console.log('balance.js: Credit calculation for TIMED mode.'); // Kan genaktiveres
         if (balanceStartTimeInput.value && balanceEndTimeInput.value) {
           const [sh, sm] = balanceStartTimeInput.value.split(':').map(Number);
           const [eh, em] = balanceEndTimeInput.value.split(':').map(Number);
@@ -147,12 +152,9 @@ document.addEventListener('DOMContentLoaded', function () {
             balanceEndMinutes += 24 * 60;
           }
           durationMinutes = balanceEndMinutes - balanceStartMinutes;
-          // console.log(`balance.js: Timed - durationMinutes: ${durationMinutes}`); // Kan genaktiveres
         } else {
-          // console.log('balance.js: Timed mode, but start or end time is missing.'); // Kan genaktiveres
         }
       } else if (selectedMode === 'always') {
-        // console.log('balance.js: Credit calculation for ALWAYS mode.'); // Kan genaktiveres
         const currentSoC = parseFloat(appSettings.soc) || 0;
         const minSoCForBalancing = parseFloat(balanceMinSoCInput.value) || 0;
         const maxSoCForBalancing = parseFloat(balanceMaxSoCInput.value) || 100;
@@ -162,8 +164,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let effectiveUpperSoC = Math.min(currentSoC, maxSoCForBalancing);
         const availableSoCPercent = Math.max(0, effectiveUpperSoC - minSoCForBalancing);
 
-        // console.log(`balance.js: Always - currentSoC: ${currentSoC}, minSoCSet: ${minSoCForBalancing}, maxSoCSet: ${maxSoCForBalancing}, effectiveUpperSoC: ${effectiveUpperSoC}`);
-        // console.log(`balance.js: Always - availableSoCPercent for V2G: ${availableSoCPercent}`);
 
         const availableKWh = (availableSoCPercent / 100) * batteryCapacitykWh;
 
@@ -172,10 +172,9 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
           durationMinutes = 0;
         }
-        // console.log(`balance.js: Always - batteryCap: ${batteryCapacitykWh}kWh, availableKWh: ${availableKWh.toFixed(2)}, assumedV2GPower: ${assumedV2GPowerKW}kW`);
-        // console.log(`balance.js: Always - calculated durationMinutes: ${durationMinutes.toFixed(0)}`);
       }
 
+      // Bruger fornævnte klasser til at håndtere balancering
       if (durationMinutes > 0) {
         const ordre = new BalanceOrdre(`V2G_${selectedMode}`, durationMinutes, 0);
         const bs = new BalanceSession(tempElbil);
@@ -187,12 +186,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         credits = kred.visSaldo();
       } else {
-        // console.log(`balance.js: Duration for ${selectedMode} is not positive (${durationMinutes.toFixed(0)} mins), no credits.`); // Kan genaktiveres
         credits = 0;
       }
     } else if (creditsDisplaySectionEl) {
       creditsDisplaySectionEl.style.display = 'none';
-      // console.log('balance.js: V2G not enabled or credits section not found. Hiding credits.'); // Kan genaktiveres
       credits = 0;
     }
 
@@ -202,8 +199,8 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('balance.js: FINAL V2G Credits display updated. Credits:', credits);
   }
 
+  // Opdaterer batteri displayet på balance siden
   function updateBatteryDisplayOnBalancePage() {
-    // console.log('balance.js: updateBatteryDisplayOnBalancePage CALLED'); 
     const appSettingsRaw = localStorage.getItem(APP_SETTINGS_KEY);
     if (!appSettingsRaw) {
       console.error("balance.js: appSettings not found for battery display.");
@@ -240,10 +237,10 @@ document.addEventListener('DOMContentLoaded', function () {
       if (v2gMinLineBalanceEl) v2gMinLineBalanceEl.style.display = 'none';
       if (v2gMaxLineBalanceEl) v2gMaxLineBalanceEl.style.display = 'none';
     }
-    // console.log('balance.js: Battery display on balance page updated. Current SoC:', currentSoC); 
     updateV2GCreditsDisplay();
   }
 
+  // --- Event listeners ---
   balanceMinSoCInput.addEventListener('input', function () {
     balanceMinSoCValDisplay.textContent = balanceMinSoCInput.value + '%';
     if (parseInt(balanceMinSoCInput.value) > parseInt(balanceMaxSoCInput.value)) {
@@ -266,8 +263,8 @@ document.addEventListener('DOMContentLoaded', function () {
   balanceStartTimeInput.addEventListener('change', updateV2GCreditsDisplay);
   balanceEndTimeInput.addEventListener('change', updateV2GCreditsDisplay);
 
+  // Opdaterer UI for V2G balancering
   function updateV2GOverallUI(isV2GEnabled) {
-    // console.log('balance.js: updateV2GOverallUI CALLED with isV2GEnabled:', isV2GEnabled); 
     const gridModeSection = document.querySelector('.grid-mode-section');
     if (isV2GEnabled) {
       toggleV2GOverallBtn.classList.add('active');
@@ -285,20 +282,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     checkBalanceMode();
     updateBatteryDisplayOnBalancePage();
-    // console.log('balance.js: V2G Overall UI updated.'); 
   }
 
+  // Toggle knap til at aktivere/deaktivere V2G balancering
   toggleV2GOverallBtn.addEventListener('click', function () {
     const isCurrentlyEnabled = toggleV2GOverallBtn.classList.contains('active');
-    // console.log('balance.js: toggleV2GOverallBtn clicked. Was enabled:', isCurrentlyEnabled, 'New state will be:', !isCurrentlyEnabled); 
     updateV2GOverallUI(!isCurrentlyEnabled);
   });
 
+  // Kontrollerer hvilken balanceringstilstand der er valgt
   function checkBalanceMode() {
-    // console.log('balance.js: checkBalanceMode CALLED'); 
     const isV2GEnabled = toggleV2GOverallBtn.classList.contains('active');
     if (!isV2GEnabled) {
-      // console.log('balance.js: checkBalanceMode - V2G is OFF, hiding timed settings and ensuring credits are updated.'); 
       timedSettingsDiv.style.display = 'none';
       if (creditsDisplaySectionEl) creditsDisplaySectionEl.style.display = 'none';
       updateV2GCreditsDisplay();
@@ -309,7 +304,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!selectedModeRadio && radioButtons.length > 0) {
       radioButtons[0].checked = true;
       selectedModeRadio = radioButtons[0];
-      // console.log('balance.js: checkBalanceMode - No radio selected, defaulted to first option.'); 
     }
     const selectedModeValue = selectedModeRadio ? selectedModeRadio.value : 'always';
 
@@ -319,15 +313,14 @@ document.addEventListener('DOMContentLoaded', function () {
       timedSettingsDiv.style.display = 'none';
     }
     updateV2GCreditsDisplay();
-    // console.log('balance.js: Balance mode checked. Selected:', selectedModeValue, '. Timed settings display:', timedSettingsDiv.style.display); 
   }
 
   radioButtons.forEach(function (radio) {
     radio.addEventListener('change', checkBalanceMode);
   });
 
+  // Gemmer indstillingerne i localStorage
   saveBalanceSettingsBtn.addEventListener('click', function () {
-    // --- 1) first, save the settings exactly as before ---
     const selectedModeRadio = document.querySelector('input[name="balanceMode"]:checked');
     const settings = {
       v2gOverallEnabled: toggleV2GOverallBtn.classList.contains('active'),
@@ -340,12 +333,10 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.setItem(BALANCE_SETTINGS_KEY, JSON.stringify(settings));
     updateV2GCreditsDisplay();
 
-    // --- 2) now toggle the “Balance Session” active state ---
     balanceSessionActive = !balanceSessionActive;
     localStorage.setItem('balanceSessionActive', JSON.stringify(balanceSessionActive));
 
     if (balanceSessionActive) {
-      // show the current max SoC limit as session info
       const socLimit = balanceMaxSoCValDisplay.textContent;
       balanceSessionInfo = `Maks SoC: ${socLimit}`;
       localStorage.setItem('balanceSessionInfo', balanceSessionInfo);
@@ -356,14 +347,13 @@ document.addEventListener('DOMContentLoaded', function () {
     reflectBalanceSessionBtn();
   });
 
+  // Indlæs og anvend gemte indstillinger fra localStorage
   function loadAndApplySettings() {
     console.log('balance.js: loadAndApplySettings CALLED');
     const savedSettingsRaw = localStorage.getItem(BALANCE_SETTINGS_KEY);
-    // console.log('balance.js: Raw data from localStorage (balanceSettings):', savedSettingsRaw); 
     if (savedSettingsRaw) {
       try {
         const parsedSettings = JSON.parse(savedSettingsRaw);
-        // console.log('balance.js: Parsed balanceSettings:', parsedSettings); 
 
         balanceMinSoCInput.value = parsedSettings.minSoCForBalancing || '20';
         balanceMinSoCValDisplay.textContent = balanceMinSoCInput.value + '%';
@@ -383,7 +373,6 @@ document.addEventListener('DOMContentLoaded', function () {
           balanceStartTimeInput.value = parsedSettings.timedModeStartTime || '';
           balanceEndTimeInput.value = parsedSettings.timedModeEndTime || '';
         }
-        // console.log('balance.js: Balance settings loaded and applied.'); 
       } catch (e) {
         console.error('balance.js: Error parsing saved balance settings:', e);
         updateV2GOverallUI(false);
@@ -392,7 +381,6 @@ document.addEventListener('DOMContentLoaded', function () {
         balanceMaxSoCInput.value = '80'; balanceMaxSoCValDisplay.textContent = '80%';
       }
     } else {
-      // console.log('balance.js: No saved balance settings found. Applying default UI state.'); 
       updateV2GOverallUI(false);
       if (radioButtons.length > 0) radioButtons[0].checked = true;
       balanceMinSoCValDisplay.textContent = balanceMinSoCInput.value + '%';

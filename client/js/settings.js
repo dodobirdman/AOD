@@ -1,10 +1,10 @@
-// js/settings.js
+//settings.js
 document.addEventListener('DOMContentLoaded', () => {
     console.log('settings.js: DOMContentLoaded event fired.');
     const KEY = 'appSettings'; 
 
+    // Hender elementer fra DOM
     const els = {
-      // theme:    document.getElementById('themeSelect'), // FJERNET hvis tema-select er væk fra HTML
       notifyT:  document.getElementById('notifyTarget'),
       notifyV:  document.getElementById('notifyV2G'),
       battery:  document.getElementById('batterySize'),
@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     console.log('settings.js: DOM elements identified:', els);
   
+    // Henter indstillinger fra localStorage og anvender dem på formularfelterne
     function loadSettings() {
       console.log('settings.js: Attempting to load settings from localStorage with KEY:', KEY);
       const savedSettingsRaw = localStorage.getItem(KEY);
@@ -50,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveSettings() {
       console.log('settings.js: saveSettings function called.');
       const settingsToSave = {
-        // theme:    els.theme ? els.theme.value : 'light', // FJERNET
+        
         notifyT:  els.notifyT ? els.notifyT.checked : false,
         notifyV:  els.notifyV ? els.notifyV.checked : false,
         battery:  els.battery ? els.battery.value : '', 
@@ -58,12 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
         speed:    els.speed ? els.speed.value : '',     
         region:   els.region ? els.region.value : 'DK2', 
       };
-      // Sletter theme-egenskab hvis den eksisterer fra gamle versioner, for at rydde op
+      
+      // Fjerner temaindstillingen, da den ikke længere er relevant
       if (settingsToSave.hasOwnProperty('theme')) {
           delete settingsToSave.theme;
       }
       console.log('settings.js: Settings to save:', settingsToSave);
 
+      // Gemmer indstillingerne i localStorage
       try {
         localStorage.setItem(KEY, JSON.stringify(settingsToSave));
         console.log('settings.js: Settings successfully saved to localStorage with KEY:', KEY);
@@ -81,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('settings.js: Save button (saveSettingsBtn) not found in HTML.');
     }
   
-    if (els.clear) { /* ... (clear logic as before) ... */ 
+    if (els.clear) { 
         els.clear.addEventListener('click', () => {
             if (confirm('Er du sikker på, at du vil slette ALLE lokale data? Dette kan ikke fortrydes.')) {
             localStorage.clear();
@@ -94,7 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('settings.js: Clear button (clearDataBtn) not found in HTML. Listener not attached.');
     }
   
-    if (els.exportBtn) { /* ... (export logic as before) ... */
+    // Irrelevant kode brugt til at eksportere data
+    if (els.exportBtn) { 
         els.exportBtn.addEventListener('click', () => {
             const dataToExport = {};
             for (let i = 0; i < localStorage.length; i++) {
@@ -123,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('settings.js: Export button (exportDataBtn) not found in HTML. Listener not attached.');
     }
     
-    if (els.pwdForm) { /* ... (password form logic as before) ... */ 
+    if (els.pwdForm) { 
         els.pwdForm.addEventListener('submit', e => {
             e.preventDefault();
             if (!els.newPwd || !els.confirm) return; 

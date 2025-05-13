@@ -1,6 +1,7 @@
 // battery.js
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('battery.js: DOMContentLoaded event fired.');
+
+  // Etablerer klassen Elbil til at håndtere batterioplysninger
   class Elbil {
     constructor(kapacitetKWh, maxLadeeffekt, nuværendeSoC) {
       this.kapacitetKWh = kapacitetKWh;
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const elbil = new Elbil(0, 0, 0);
   let appS = {};
 
+  // Funktion til at opdatere elbil-objektet fra appSettings i localStorage
   function refreshElbilFromSettings() {
     console.log('battery.js: refreshElbilFromSettings CALLED');
     const currentAppSettingsRaw = localStorage.getItem('appSettings');
@@ -37,10 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   refreshElbilFromSettings();
 
+  // Henter gemte indstillinger fra localStorage
   const BALANCE_SETTINGS_KEY = 'balanceSettings';
   const BATTERY_PAGE_SETTINGS_KEY = 'batteryPageSettings';
   const storedBatteryPageSettings = JSON.parse(localStorage.getItem(BATTERY_PAGE_SETTINGS_KEY) || '{}');
 
+  // Henter DOM-elementer
   const targetSl = document.getElementById('targetSlider');
   const depIn = document.getElementById('departureTime');
   const manStart = document.getElementById('manualStartTime');
@@ -58,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const startBtn = document.getElementById('startChargingBtn');
   const saveBtn = document.getElementById('saveChangesBtn');
 
+  // Henter gemte session-oplysninger fra localStorage
   let nowOn = JSON.parse(localStorage.getItem('chargingNow')) || false;
   let sessionActive = JSON.parse(localStorage.getItem('sessionActive')) || false;
   let sessionInfo = localStorage.getItem('sessionInfo') || '';
@@ -76,14 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
     smartCtrls.style.display = ''; manualCtrls.style.display = 'none';
   }
 
+  // Funktion til at gemme batteri-sideindstillinger i localStorage
   function persistBatteryPageInputs() {
     const o = { target: targetSl.value, departure: depIn.value, manualStartTime: manStart.value, manualEndTime: manEnd.value, mode: mode };
     localStorage.setItem(BATTERY_PAGE_SETTINGS_KEY, JSON.stringify(o));
   }
 
+  // Funktion til at hente elpriser fra API
   let pricesCache = null;
   async function getPrices() {
-    // ... (getPrices logic as before, den er uafhængig af tema) ...
+    
     console.log('battery.js: getPrices CALLED');
     const currentAppSettingsForRegion = JSON.parse(localStorage.getItem('appSettings') || '{}');
     const region = currentAppSettingsForRegion.region || 'DK2';
@@ -91,7 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!pricesCache) {
       const d = new Date(), YYYY = d.getFullYear(), MM = String(d.getMonth() + 1).padStart(2, '0'), DD = String(d.getDate()).padStart(2, '0');
       const url = `https://www.elprisenligenu.dk/api/v1/prices/${YYYY}/${MM}-${DD}_${region}.json`;
-      console.log('battery.js: Fetching prices for region:', region, 'URL:', url);
+      
+      // Try kode der henter priser fra API
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -121,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return pricesCache;
   }
 
+  // Funktion til at opdatere UI for opladningstilstand
   function reflectNow() {
     startBtn.classList.toggle('active', nowOn);
     startBtn.textContent = nowOn ? 'Stop Opladning' : 'Start Opladning';
@@ -141,8 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
   reflectNow();
   reflectSessionBtn();
 
+  // Funktion til at opdatere batterioplysninger i smart tilstand
   async function updateSmart() {
-    // ... (updateSmart logic as before, men uden creditLine og creditEl) ...
+    
     console.log('battery.js: updateSmart CALLED');
     refreshElbilFromSettings();
     persistBatteryPageInputs();
@@ -192,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const thisM = Math.min(rem, chargeThisHourMax);
           const kWhH = elbil.maxLadeeffekt > 0 ? elbil.maxLadeeffekt * (thisM / 60) : 0;
 
-          // console.log(`battery.js (smart): hr=${hr}, price=${price.toFixed(3)}, thisM=${thisM}, kWhH=${kWhH.toFixed(3)}, remMins=${rem-thisM}, totalCostSoFar=${total.toFixed(3)}`); // For meget log
+          
           total += kWhH * price;
           rem -= thisM;
           cursor += thisM;
@@ -202,6 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Opdaterer UI med batterioplysninger
     console.log(`battery.js (smart): Updating UI. currentSoC: ${currentSoC}, tp: ${tp}`);
     currBar.style.width = `${currentSoC}%`;
     currBar.textContent = `${currentSoC.toFixed(0)}%`;
@@ -231,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Funktion til at håndtere manuel opladning
   async function updateManual() {
 
     refreshElbilFromSettings();
@@ -271,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const kWhGot = elbil.maxLadeeffekt > 0 ? elbil.maxLadeeffekt * (dur / 60) : 0;
     const pctInc = elbil.kapacitetKWh > 0 ? (kWhGot / elbil.kapacitetKWh) * 100 : 0;
     const newSoc = Math.min(100, currentSoC + pctInc);
-    // mirror the Smart‐mode bar update here too
+    
     const current = elbil.nuværendeSoC;
     currBar.style.width = `${current}%`;
     currBar.textContent = `${current}%`;
@@ -288,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error("battery.js: Insufficient price data for cost calculation (manual).");
       costLine.innerHTML = `Est. Pris: <strong>Prisdata utilgængelig</strong>`;
     } else {
-      // cap manual charging at 100% SoC
+      // Stopper prisberegning efter bilen har ramt 100%
       const neededKWh = ((100 - currentSoC) / 100) * elbil.kapacitetKWh;
       const minutesToFull = elbil.maxLadeeffekt > 0
         ? (neededKWh / elbil.maxLadeeffekt) * 60
@@ -304,7 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const chargeThisHourMax = 60 - into;
         const thisM = Math.min(rem, chargeThisHourMax);
         const kWhH = elbil.maxLadeeffekt > 0 ? elbil.maxLadeeffekt * (thisM / 60) : 0;
-        // console.log(`battery.js (manual): hr=${hr}, price=${price.toFixed(3)}, thisM=${thisM}, kWhH=${kWhH.toFixed(3)}, remMins=${rem-thisM}, totalCostSoFar=${total.toFixed(3)}`); // For meget log
         total += kWhH * price;
         rem -= thisM;
         cursor += thisM;
@@ -319,6 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Event listeners til at håndtere brugerinput
   targetSl.addEventListener('input', () => { if (mode === 'smart') updateSmart(); });
   depIn.addEventListener('change', () => { if (mode === 'smart') updateSmart(); });
   manStart.addEventListener('change', () => { if (mode === 'manual') updateManual(); });
@@ -366,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  console.log('battery.js: Initializing page. Current mode:', mode);
+  // Initial opdatering af UI
   if (mode === 'manual') {
     updateManual();
   } else {

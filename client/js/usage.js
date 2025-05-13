@@ -1,10 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // ── Load settings ───────────────────────────
+  // Hent gemte app-indstillinger fra localStorage. Hvis ingen findes, bruges et tomt objekt.
   const settings = JSON.parse(localStorage.getItem('appSettings')||'{}');
+  // Udtræk standardpris pr. kWh fra indstillingerne, eller brug en fallback-værdi (2.90 DKK).
   const pricePerKWh = parseFloat(settings.defaultCost) || 2.90; // Antager at defaultCost stadig kan være i settings
   const currency    = settings.currency || 'DKK';
 
-  // ── Monthly summary ─────────────────────────
+  // Koden herunder er til at vise brugerens energiforbrug og omkostninger.
+  // Da det er en prototype er dataene hardkodet, med mulighed for at de senere kan hentes fra en server.
+  
   const totalCharged = 220;
   const totalFedBack = 45;
   const totalCost    = (totalCharged - totalFedBack) * pricePerKWh;
@@ -15,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Recent sessions ──────────────────────────
   const sessions = [
-    // Ændret datoformat til ISO 8601 for nemmere parsing og lokalisering
+    
     { dateString:'2025-04-12', charged:35, fedBack:5 },
     { dateString:'2025-04-11', charged:30, fedBack:0 },
     { dateString:'2025-04-10', charged:40, fedBack:10 },
@@ -31,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateObj = new Date(s.dateString);
     const formattedDate = dateObj.toLocaleDateString('da-DK', {
       day: 'numeric',
-      month: 'short', // 'short' giver f.eks. "apr."
+      month: 'short', 
       year: 'numeric'
     });
 

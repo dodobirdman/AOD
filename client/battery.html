@@ -15,7 +15,7 @@
     <div class="container">
       <h1>Batteri </h1>
 
-      <!-- Battery Icon Section -->
+      
       <div class="battery-icon-section">
         <div class="battery-outline">
           <div class="currentBattery" id="currentBattery">--%</div>
@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <!-- Connection + Start Charging -->
+      
       <div class="connection-section">
         <span class="connection-text">Bil tilsluttet</span>
         <button id="startChargingBtn" class="immediate-btn">Start Opladning</button>
@@ -38,13 +38,13 @@
       <hr class="separator scheduling-separator" />
       <h2 class="sched-heading">Planlægning</h2>
 
-      <!-- Smart vs Manual Toggle -->
+      
       <div class="sched-toggle">
         <button id="smartBtn"  class="sched-btn active">Smart Opladning</button>
         <button id="manualBtn" class="sched-btn">Manuel Opladning</button>
       </div>
 
-      <!-- Smart Controls -->
+      
       <div id="smartControls" class="sched-controls">
         <label for="targetSlider">Ønsket Opladning (%):</label>
         <input type="range" id="targetSlider" min="0" max="100" />
@@ -53,7 +53,7 @@
         <input type="time" id="departureTime" class="compact-time" />
       </div>
 
-      <!-- Manual Controls -->
+      
       <div id="manualControls" class="sched-controls" style="display:none;">
         <label for="manualStartTime">Starttid:</label>
         <input type="time" id="manualStartTime" class="compact-time" />
@@ -64,7 +64,7 @@
 
       <hr class="separator" />
 
-      <!-- Bottom Info Box -->
+      
       <div class="start-cost-box small"> 
         <div class="start-cost-info">
           <div id="startLine">
@@ -78,18 +78,18 @@
         </div>
       </div>
 
-      <!-- Start Session -->
+      
       <button id="saveChangesBtn" class="save-btn">Start Session</button>
-    </div> <!-- slut .container -->
+    </div> 
 
-    <!-- Bottom Nav -->
+    
     <div class="tab-bar">
       <a href="battery.html" class="tab active"> <span class="active-pill">Batteri</span> </a>
   <a href="balance.html" class="tab"> <span>Balance</span> </a> 
       <a href="usage.html"   class="tab"><span>Forbrug</span></a>
-    </div> <!-- slut .tab-bar -->
+    </div> 
 
-  </div> <!-- slut .phone-screen-wrapper -->
+  </div> 
 
   <script src="js/battery.js"></script>
 </body>
